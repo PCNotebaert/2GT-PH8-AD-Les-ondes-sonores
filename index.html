@@ -1,0 +1,2241 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PH8 - Ondes sonores</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+<style>
+:root {
+  --bleu:#1F4E79;--bleu2:#2E75B6;--bleu3:#D6E4F0;
+  --rouge:#C00000;--vert:#1E6B2E;--orange:#E67E22;--violet:#7D3C98;
+  --turquoise:#148F77;--gris:#F4F4F4;--gris2:#DDDDDD;--noir:#1A1A1A;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Segoe UI',Arial,sans-serif;background:#ECEFF4;color:var(--noir);font-size:15px;}
+
+.eleve-header{background:white;border:2px solid var(--bleu2);border-radius:10px;margin:14px 20px 0;padding:12px 18px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
+.eleve-header h2{font-size:15px;color:var(--bleu);font-weight:700;width:100%;margin-bottom:4px;}
+.field{display:flex;align-items:center;gap:6px;font-size:13px;}
+.field label{font-weight:600;color:#555;white-space:nowrap;}
+.field input{border:1px solid var(--gris2);border-radius:4px;padding:4px 8px;font-size:13px;width:160px;}
+.field input.short{width:90px;}
+
+header{background:var(--bleu);color:white;padding:12px 24px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 8px rgba(0,0,0,0.3);}
+.header-badge{background:var(--rouge);color:white;font-weight:700;font-size:14px;padding:6px 12px;border-radius:6px;white-space:nowrap;}
+.header-titles h1{font-size:17px;font-weight:700;line-height:1.2;}
+.header-titles p{font-size:12px;opacity:0.75;margin-top:2px;}
+
+.print-bar{display:flex;justify-content:flex-end;margin:10px 20px 4px;gap:10px;align-items:center;flex-wrap:wrap;}
+.save-bar{display:flex;justify-content:flex-end;align-items:center;gap:10px;flex:1;padding:8px 12px;background:white;border:2px solid var(--bleu2);border-radius:8px;}
+.save-bar span:first-child{font-size:13px;color:#555;}
+.save-status{font-size:12px;color:#888;font-style:italic;flex:1;text-align:right;}
+.save-status.ok{color:var(--vert);font-style:normal;font-weight:600;}
+.save-status.warn{color:var(--orange);font-style:normal;font-weight:600;}
+.btn-save{background:var(--vert);color:white;border:none;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-clear{background:#C00000;color:white;border:none;border-radius:7px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;}
+.btn-print{background:var(--bleu2);color:white;border:none;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:700;cursor:pointer;}
+
+.toolbox{margin:14px 20px 0;background:white;border:2px solid var(--bleu2);border-radius:10px;overflow:hidden;}
+.toolbox-header{background:var(--bleu2);color:white;padding:10px 16px;font-weight:700;font-size:14px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none;}
+.toolbox-header:hover{background:var(--bleu);}
+.toolbox-body{padding:14px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;}
+.toolbox-body.collapsed{display:none;}
+.def-card{background:var(--gris);border-left:4px solid var(--bleu2);border-radius:6px;padding:10px 12px;}
+.def-card h4{color:var(--bleu);font-size:13px;margin-bottom:6px;}
+.def-card p{font-size:13px;line-height:1.6;}
+.def-card .formula{background:white;border:1px solid var(--gris2);border-radius:4px;padding:6px 10px;margin-top:6px;font-size:13px;text-align:center;}
+
+.tabs-wrapper{margin:14px 20px 0;}
+.tabs{display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;}
+.tab-btn{background:white;border:2px solid var(--gris2);border-bottom:none;border-radius:8px 8px 0 0;padding:8px 12px;font-size:12px;font-weight:600;cursor:pointer;color:#666;white-space:nowrap;transition:all .2s;}
+.tab-btn:hover{background:var(--bleu3);color:var(--bleu);}
+.tab-btn.active{background:var(--bleu);color:white;border-color:var(--bleu);}
+.tab-content{background:white;border:2px solid var(--gris2);border-radius:0 8px 8px 8px;padding:20px;display:none;}
+.tab-content.active{display:block;}
+
+.situation-header{display:flex;align-items:flex-start;gap:14px;margin-bottom:16px;}
+.situation-num{background:var(--rouge);color:white;font-weight:700;font-size:20px;width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.situation-header h2{font-size:17px;color:var(--bleu);margin-bottom:4px;}
+.situation-header p{font-size:13px;color:#555;line-height:1.5;}
+.seance-badge{display:inline-block;background:var(--orange);color:white;font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;margin-bottom:6px;}
+
+.canvas-zone{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;margin-bottom:16px;}
+canvas{border:2px solid var(--gris2);border-radius:8px;background:#F8FBFF;display:block;}
+
+.controls{display:flex;flex-direction:column;gap:8px;min-width:190px;}
+.ctrl-section{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:4px;}
+.btn{border:none;border-radius:6px;padding:7px 12px;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:flex;align-items:center;gap:6px;}
+.btn:hover{opacity:0.85;transform:translateY(-1px);}
+.btn-green{background:var(--vert);color:white;}
+.btn-stop{background:var(--rouge);color:white;}
+.btn-sound{background:var(--violet);color:white;}
+.btn-sound.playing{background:var(--orange);}
+.btn-reset{background:#888;color:white;}
+.btn-milieu{border:2px solid var(--gris2);border-radius:6px;padding:6px 10px;font-size:12px;font-weight:700;cursor:pointer;background:white;color:#555;transition:all .15s;text-align:left;}
+.btn-milieu:hover{border-color:var(--bleu2);color:var(--bleu);}
+.btn-milieu.active{border-color:var(--bleu);background:var(--bleu);color:white;}
+
+.slider-zone{display:flex;flex-direction:column;gap:4px;margin-top:2px;}
+.slider-zone label{font-size:12px;font-weight:600;color:#555;}
+.slider-row{display:flex;align-items:center;gap:8px;}
+.slider-row input[type=range]{flex:1;cursor:pointer;}
+.slider-val{font-size:13px;font-weight:700;color:var(--bleu);min-width:60px;text-align:right;}
+
+.info-box{background:var(--bleu3);border:1px solid var(--bleu2);border-radius:6px;padding:8px 10px;font-size:12px;margin-top:4px;line-height:1.6;}
+.info-box strong{color:var(--bleu);display:block;margin-bottom:3px;}
+.piege-box{background:#FFF8E1;border:2px solid #F0C040;border-radius:8px;padding:8px 12px;font-size:12px;margin-top:6px;line-height:1.5;}
+.piege-box strong{color:#8B6000;}
+.data-box{background:#EAFAF1;border:2px solid var(--vert);border-radius:8px;padding:8px 12px;font-size:12px;margin-top:6px;line-height:1.6;}
+.data-box strong{color:var(--vert);display:block;margin-bottom:3px;}
+
+.questions{margin-top:16px;border-top:2px solid var(--bleu3);padding-top:14px;}
+.q-title{font-size:12px;font-weight:700;color:var(--bleu);margin-bottom:10px;text-transform:uppercase;letter-spacing:0.5px;}
+.question{background:var(--gris);border-left:4px solid var(--bleu2);border-radius:0 6px 6px 0;padding:9px 12px;margin-bottom:10px;}
+.code{display:inline-block;color:white;font-size:11px;font-weight:700;padding:2px 6px;border-radius:3px;margin-right:5px;}
+.code-app{background:var(--bleu2);}
+.code-rea{background:var(--vert);}
+.code-val{background:var(--violet);}
+textarea{width:100%;border:1px solid var(--gris2);border-radius:4px;padding:7px 9px;font-size:13px;font-family:inherit;resize:vertical;min-height:52px;margin-top:6px;background:#FAFAFA;}
+/* ── CARAC BAR (listes de réponses) ── */
+.carac-bar{margin-top:8px;}
+.carac-items{display:flex;flex-direction:column;gap:6px;}
+.carac-item{display:flex;align-items:center;gap:8px;font-size:13px;}
+.carac-tiret{color:var(--bleu2);font-weight:700;flex-shrink:0;}
+.carac-label{color:#444;flex-shrink:0;max-width:55%;}
+.carac-input{flex:1;border:none;border-bottom:2px solid var(--gris2);background:transparent;font-size:13px;font-family:inherit;padding:2px 4px;outline:none;color:var(--noir);}
+.carac-input:focus{border-bottom-color:var(--bleu2);}
+
+textarea:focus{outline:none;border-color:var(--bleu2);}
+
+.mesure-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+.mesure-table th{background:var(--bleu);color:white;padding:7px 10px;text-align:center;font-size:12px;}
+.mesure-table td{border:1px solid var(--gris2);padding:6px 8px;text-align:center;}
+.mesure-table input{width:100%;border:none;background:transparent;font-size:13px;text-align:center;font-family:inherit;}
+.mesure-table input:focus{outline:2px solid var(--bleu2);border-radius:3px;}
+
+/* FRISE */
+.frise-wrap{margin:16px 0;}
+.frise{position:relative;height:54px;border-radius:8px;overflow:hidden;background:linear-gradient(to right,#6A0DAD 0%,#3498DB 15%,#27AE60 25%,#F1C40F 55%,#E67E22 75%,#C0392B 100%);}
+.frise-label{position:absolute;top:50%;transform:translateY(-50%);color:white;font-size:11px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,0.7);pointer-events:none;}
+.frise-cursor{position:absolute;top:0;width:3px;height:100%;background:white;box-shadow:0 0 6px rgba(0,0,0,0.6);transition:left 0.1s;pointer-events:none;}
+.frise-cursor::after{content:'▼';position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:14px;color:var(--noir);}
+.frise-limits{display:flex;justify-content:space-between;font-size:11px;color:#666;margin-top:4px;}
+.frise-examples{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:10px;}
+.frise-example{background:var(--gris);border-radius:6px;padding:8px 10px;font-size:12px;text-align:center;border-left:3px solid var(--bleu2);}
+.frise-example.active{background:var(--bleu3);border-left-color:var(--bleu);font-weight:600;}
+.frise-example .ex-icon{font-size:20px;display:block;margin-bottom:2px;}
+.frise-example .ex-freq{font-size:11px;color:#777;}
+
+/* JAUGE */
+.jauge-wrap{margin:10px 0;}
+.jauge-bar{height:28px;border-radius:8px;background:linear-gradient(to right,#27AE60 0%,#27AE60 50%,#F1C40F 65%,#E67E22 80%,#C0392B 100%);position:relative;overflow:hidden;}
+.jauge-fill{position:absolute;right:0;top:0;height:100%;background:rgba(200,200,200,0.7);transition:width 0.15s;}
+.jauge-cursor{position:absolute;top:0;width:4px;height:100%;background:var(--noir);opacity:0.7;border-radius:2px;transition:left 0.15s;}
+.jauge-labels{display:flex;justify-content:space-between;font-size:10px;color:#666;margin-top:2px;}
+.db-display{text-align:center;font-size:28px;font-weight:700;margin:6px 0;color:var(--bleu);}
+.db-example{text-align:center;font-size:13px;color:#555;font-style:italic;min-height:20px;}
+
+/* TIMBRE */
+.timbre-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:12px 0;}
+.timbre-card{background:var(--gris);border-radius:8px;padding:12px;text-align:center;}
+.timbre-card h4{color:var(--bleu);font-size:13px;margin-bottom:8px;}
+
+/* BILAN - texte à trous */
+.trou-zone{background:var(--gris);border-radius:8px;padding:16px;font-size:14px;line-height:2.4;margin-bottom:16px;}
+.trou-zone input.trou{border:none;border-bottom:2px solid var(--bleu2);background:transparent;font-size:14px;font-family:inherit;width:130px;text-align:center;padding:2px 4px;outline:none;color:var(--bleu);font-weight:700;}
+.trou-zone input.trou.correct{border-color:var(--vert);color:var(--vert);background:#EAFAF1;}
+.trou-zone input.trou.incorrect{border-color:var(--rouge);color:var(--rouge);background:#FFF0F0;}
+.bilan-section{margin-bottom:20px;}
+.bilan-section h3{color:var(--bleu);font-size:15px;font-weight:700;margin-bottom:10px;padding-bottom:6px;border-bottom:2px solid var(--bleu3);}
+.qcm-item{background:var(--gris);border-radius:8px;padding:12px;margin-bottom:10px;}
+.qcm-item p{font-size:13px;margin-bottom:8px;font-weight:600;}
+.qcm-choices{display:flex;flex-wrap:wrap;gap:8px;}
+.qcm-btn{border:2px solid var(--gris2);border-radius:6px;padding:6px 14px;font-size:13px;cursor:pointer;background:white;transition:all .15s;}
+.qcm-btn:hover{border-color:var(--bleu2);}
+.qcm-btn.selected{border-color:var(--bleu2);background:var(--bleu3);}
+.qcm-btn.correct{border-color:var(--vert);background:#EAFAF1;color:var(--vert);font-weight:700;}
+.qcm-btn.incorrect{border-color:var(--rouge);background:#FFF0F0;color:var(--rouge);}
+.score-box{background:var(--bleu);color:white;border-radius:10px;padding:16px 24px;text-align:center;margin-top:16px;}
+.score-box .score-num{font-size:36px;font-weight:700;}
+.score-box p{font-size:13px;opacity:0.85;margin-top:4px;}
+.btn-corriger{background:var(--orange);color:white;border:none;border-radius:7px;padding:9px 20px;font-size:14px;font-weight:700;cursor:pointer;margin-top:12px;}
+.synth-table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0;}
+.synth-table th{background:var(--bleu);color:white;padding:8px 12px;text-align:left;}
+.synth-table td{border:1px solid var(--gris2);padding:7px 12px;}
+.synth-table tr:nth-child(even) td{background:#F8F8F8;}
+
+.nav-bottom{display:flex;justify-content:flex-end;margin-top:14px;gap:8px;}
+.btn-nav{background:var(--bleu);color:white;border:none;border-radius:6px;padding:7px 16px;font-size:13px;font-weight:600;cursor:pointer;}
+.btn-nav:hover{background:var(--bleu2);}
+
+/* Indicateur de mesure T interactive */
+.mesure-T-info{background:#FFF3E0;border:2px solid var(--orange);border-radius:8px;padding:8px 12px;font-size:12px;margin-top:8px;line-height:1.6;}
+.mesure-T-info strong{color:var(--orange);display:block;margin-bottom:3px;}
+
+@media print {
+  @page{margin:0.7cm;}
+  body{background:white;font-size:10pt;}
+  .btn,.btn-print,.print-bar,.save-bar,.tab-btn,.btn-nav,.controls,.toolbox{display:none!important;}
+  .tabs{display:none!important;}
+  canvas,.canvas-zone,.frise-wrap,.jauge-wrap,.timbre-grid{display:none!important;}
+  .tab-content{display:block!important;border:1px solid #ccc;page-break-inside:unset;margin-bottom:10pt;padding:8px;}
+  .question{page-break-inside:avoid;padding:5px 8px;margin-bottom:5px;}
+  textarea{border:1px solid #bbb;min-height:28pt;background:white;}
+  .mesure-table input{border-bottom:1px solid #aaa;}
+  .header-badge{background:#C00000!important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  .eleve-header{margin:0 0 6px 0;padding:8px 12px;}
+  header{padding:8px 14px;}
+  .trou-zone input.trou{border-bottom:1px solid #aaa;}
+  .qcm-choices,.btn-corriger,.score-box{display:none!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="eleve-header">
+  <h2>PH8 - Ondes sonores &nbsp;|&nbsp; 2<sup>nde</sup> &nbsp;- 2 séances (onglets 1–3 / onglets 4–7)</h2>
+  <div class="field"><label>Nom :</label><input type="text" id="ev0" placeholder="………………………………"></div>
+  <div class="field"><label>Prénom :</label><input type="text" id="ev1" placeholder="………………………………"></div>
+  <div class="field"><label>Classe :</label><input type="text" id="ev2" placeholder="2nde …" class="short"></div>
+  <div class="field"><label>Date :</label><input type="text" id="ev3" placeholder="…/…/……" class="short"></div>
+  <div class="field"><label>Groupe :</label><input type="text" id="ev4" placeholder="……" class="short"></div>
+  <div class="field"><label>Note :</label><input type="text" id="ev5" placeholder="… / 20" class="short"></div>
+</div>
+
+<header>
+  <div class="header-badge">PH8</div>
+  <div class="header-titles">
+    <h1>🔊 Ondes sonores - Explorer le son</h1>
+    <p>PH8 - Ondes sonores - 2nde</p>
+  </div>
+</header>
+
+<div class="print-bar">
+  <div class="save-bar">
+    <span>💾 Sauvegarde :</span>
+    <span class="save-status" id="saveStatus">Non sauvegardé</span>
+    <button class="btn-save" onclick="saveAll()">💾 Sauvegarder</button>
+    <button class="btn-clear" onclick="clearAll()">🗑️ Effacer</button>
+  </div>
+  <button class="btn-print" onclick="window.print()">🖨️ Imprimer / PDF</button>
+</div>
+
+<div class="toolbox">
+  <div class="toolbox-header" onclick="toggleToolbox()">🧰 Boîte à outils - Notions essentielles <span id="toolbox-arrow">▼</span></div>
+  <div class="toolbox-body" id="toolbox-body">
+    <div class="def-card">
+      <h4>📌 Nature du son</h4>
+      <p>Le son est une <strong>variation de pression</strong> qui se propage dans un <strong>milieu matériel</strong>. Il ne se propage <strong>pas dans le vide</strong>.</p>
+    </div>
+    <div class="def-card">
+      <h4>📌 Vitesse de propagation</h4>
+      <p>Le son met un temps \(\Delta t\) pour parcourir une distance \(d\).</p>
+      <div class="formula">\( v = \dfrac{d}{\Delta t} \)</div>
+      <p style="margin-top:6px">Dans l'air : \( v_{\text{son}} \approx 340\ \mathrm{m{\cdot}s^{-1}} \)</p>
+    </div>
+    <div class="def-card">
+      <h4>📌 Période et fréquence</h4>
+      <p>\(T\) = plus petite durée de répétition du signal (en s).<br>\(f\) = nombre de répétitions par seconde (en Hz).</p>
+      <div class="formula">\( f = \dfrac{1}{T} \)</div>
+    </div>
+    <div class="def-card">
+      <h4>📌 Domaines de fréquences</h4>
+      <p>
+        <strong>Infrasons</strong> : \( f < 20\ \text{Hz} \)<br>
+        <strong>Sons audibles</strong> : \( 20\ \text{Hz} \leq f \leq 20\ \text{kHz} \)<br>
+        <strong>Ultrasons</strong> : \( f > 20\ \text{kHz} \)
+      </p>
+    </div>
+    <div class="def-card">
+      <h4>📌 Niveau sonore</h4>
+      <p>Le <strong>sonomètre</strong> mesure le niveau sonore en <strong>décibels (dB)</strong>.<br>
+      Danger : &gt; 85 dB prolongé. Douleur : ≈ 120 dB.</p>
+    </div>
+    <div class="def-card">
+      <h4>📌 Hauteur et timbre</h4>
+      <p><strong>Hauteur</strong> ↔ fréquence.<br>
+      <strong>Timbre</strong> ↔ forme du signal.</p>
+    </div>
+  </div>
+</div>
+
+<div class="tabs-wrapper">
+<div class="tabs">
+  <button class="tab-btn active"  onclick="showTab(0)">1 - Propagation</button>
+  <button class="tab-btn" onclick="showTab(1)">2 - Vitesse du son</button>
+  <button class="tab-btn" onclick="showTab(2)">3 - Période &amp; fréquence</button>
+  <button class="tab-btn" onclick="showTab(3)">4 - Domaines</button>
+  <button class="tab-btn" onclick="showTab(4)">5 - Niveau sonore</button>
+  <button class="tab-btn" onclick="showTab(5)">6 - Timbre</button>
+  <button class="tab-btn" onclick="showTab(6)">7 - Bilan cours</button>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ONGLET 1 - PROPAGATION (5 milieux)
+══════════════════════════════════════════ -->
+<div class="tab-content active" id="tab-0">
+  <div class="situation-header">
+    <div class="situation-num">1</div>
+    <div>
+      <span class="seance-badge">🗓 Séance 1</span>
+      <h2>Nature et propagation du son</h2>
+      <p>Le son est une variation de pression qui se propage de proche en proche dans un milieu matériel. Choisis un milieu et observe comment l'onde se propage - ou pas.</p>
+    </div>
+  </div>
+  <div class="canvas-zone">
+    <canvas id="c0" width="490" height="220"></canvas>
+    <div class="controls">
+      <div class="ctrl-section">Choisir le milieu</div>
+      <button class="btn-milieu active" id="m_air"    onclick="setMilieu('air')">🌬️ Air &nbsp;<small>(340 m·s<sup>-1</sup>)</small></button>
+      <button class="btn-milieu"        id="m_eau"    onclick="setMilieu('eau')">💧 Eau &nbsp;<small>(1 500 m·s<sup>-1</sup>)</small></button>
+      <button class="btn-milieu"        id="m_bois"   onclick="setMilieu('bois')">🪵 Bois &nbsp;<small>(3 800 m·s<sup>-1</sup>)</small></button>
+      <button class="btn-milieu"        id="m_acier"  onclick="setMilieu('acier')">⚙️ Acier &nbsp;<small>(5 000 m·s<sup>-1</sup>)</small></button>
+      <button class="btn-milieu"        id="m_vide"   onclick="setMilieu('vide')">🌌 Vide &nbsp;<small>(impossible)</small></button>
+      <div style="display:flex;gap:6px;margin-top:4px;">
+        <button class="btn btn-green" id="btn0anim" onclick="toggleAnim0()" style="flex:1">▶ Lancer</button>
+        <button class="btn btn-reset" onclick="resetAnim0()">↺</button>
+      </div>
+      <button class="btn btn-sound" id="btnSon0" onclick="toggleSon0()" style="margin-top:2px">🔊 Écouter</button>
+      <div class="info-box" id="info0">
+        <strong>Milieu : AIR</strong>
+        \( v = 340\ \mathrm{m{\cdot}s^{-1}} \)<br>
+        L'onde se propage normalement.
+      </div>
+    </div>
+  </div>
+  <div class="data-box">
+    <strong>📊 Vitesse du son dans différents milieux</strong>
+    Air : \( 340\ \mathrm{m{\cdot}s^{-1}} \) &nbsp;|&nbsp; Eau : \( 1500\ \mathrm{m{\cdot}s^{-1}} \) &nbsp;|&nbsp; Bois : \( 3800\ \mathrm{m{\cdot}s^{-1}} \) &nbsp;|&nbsp; Acier : \( 5000\ \mathrm{m{\cdot}s^{-1}} \) &nbsp;|&nbsp; Vide : <strong>impossible</strong>
+  </div>
+  <div class="questions">
+    <div class="q-title">📋 Questions</div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q1.</b> Observe l'animation en milieu "Air". Comment se déplacent les particules par rapport à la direction de propagation de l'onde ? Sont-elles transportées ou restent-elles sur place ?</p>
+      <textarea id="ta_0_0" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q2.</b> Passe en milieu "Vide". Que se passe-t-il ? Que peux-tu en conclure sur les conditions nécessaires à la propagation du son ?</p>
+      <textarea id="ta_0_1" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-rea">REA</span><b>Q3.</b> Compare la vitesse de l'onde dans l'Air, l'Eau et l'Acier. Dans quel milieu le son se propage-t-il le plus vite ? Le plus lentement ? Propose une explication à partir de la nature des liaisons entre particules.</p>
+      <textarea id="ta_0_2" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-val">VAL</span><b>Q4.</b> Observe l'animation ci-dessous. On place un réveil sous une cloche à vide et on pompe progressivement l'air. Décris ce que tu observes, puis explique pourquoi le son disparaît. Ce résultat est-il cohérent avec tes observations sur le milieu VIDE ?</p>
+      <div style="display:flex;gap:14px;align-items:flex-start;margin:10px 0;flex-wrap:wrap;">
+        <canvas id="cCloche" width="300" height="210" style="border-radius:8px;border:2px solid var(--gris2);"></canvas>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:160px;">
+          <button class="btn btn-green" id="btnCloche" onclick="toggleCloche()">▶ Pomper l'air</button>
+          <button class="btn btn-reset" onclick="resetCloche()">↺ Réinitialiser</button>
+          <button class="btn btn-sound" id="btnSonCloche" onclick="toggleSonCloche()">🔊 Écouter le réveil</button>
+          <div class="info-box" id="infoCloche">
+            <strong>État de la cloche</strong>
+            Air restant : <span id="clocheAirPct" style="font-weight:700;color:var(--bleu)">100 %</span><br>
+            Son : <span id="clocheSonEtat" style="font-weight:700;color:var(--vert)">Audible</span>
+          </div>
+        </div>
+      </div>
+      <textarea id="ta_0_3" placeholder="Réponse…"></textarea>
+    </div>
+  </div>
+  <div class="nav-bottom"><button class="btn-nav" onclick="showTab(1)">Partie suivante →</button></div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ONGLET 2 - VITESSE DU SON
+══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-1">
+  <div class="situation-header">
+    <div class="situation-num">2</div>
+    <div>
+      <span class="seance-badge">🗓 Séance 1</span>
+      <h2>Mesure de la vitesse du son</h2>
+      <p>On place deux microphones sur un même axe. On produit un son bref (clap). Le son arrive d'abord sur le microphone le plus proche, puis sur le second avec un retard \(\Delta t\). On lit ce retard sur l'oscillogramme.</p>
+    </div>
+  </div>
+  <div class="canvas-zone">
+    <canvas id="c1" width="490" height="280"></canvas>
+    <div class="controls">
+      <div class="ctrl-section">Distance entre micros</div>
+      <div class="slider-zone">
+        <label>d = <span id="val1d">50</span> cm</label>
+        <div class="slider-row"><input type="range" id="sl1d" min="20" max="100" value="50" oninput="updateS1()"></div>
+      </div>
+      <button class="btn btn-green" id="btn1clap" onclick="doClap()" style="margin-top:6px">👏 Produire un clap</button>
+      <button class="btn btn-reset" onclick="resetAnim1()">↺ Réinitialiser</button>
+      <div class="info-box" id="info1">
+        <strong>En attente</strong>
+        Clique sur "Produire un clap" pour déclencher l'acquisition.
+      </div>
+    </div>
+  </div>
+  <div class="data-box">
+    <strong>📊 Protocole</strong>
+    Un son bref déclenche l'acquisition. On mesure le retard \(\Delta t\) entre les deux signaux. La célérité vaut : \( v_{\text{son}} = \dfrac{d}{\Delta t} \)
+  </div>
+  <p style="font-size:13px;margin:12px 0 6px;font-weight:600;color:var(--bleu);">📝 Tableau de mesures :</p>
+  <table class="mesure-table">
+    <tr>
+      <th>\(d\) (cm)</th><th>\(d\) (m)</th><th>\(\Delta t\) (ms)</th><th>\(\Delta t\) (s)</th><th>\(v = d/\Delta t\) (m·s<sup>-1</sup>)</th>
+    </tr>
+    <tr><td>20</td><td><input id="m1_1" type="text"></td><td><input id="m1_2" type="text"></td><td><input id="m1_3" type="text"></td><td><input id="m1_4" type="text"></td></tr>
+    <tr><td>50</td><td><input id="m1_5" type="text"></td><td><input id="m1_6" type="text"></td><td><input id="m1_7" type="text"></td><td><input id="m1_8" type="text"></td></tr>
+    <tr><td>80</td><td><input id="m1_9" type="text"></td><td><input id="m1_10" type="text"></td><td><input id="m1_11" type="text"></td><td><input id="m1_12" type="text"></td></tr>
+    <tr><td>100</td><td><input id="m1_13" type="text"></td><td><input id="m1_14" type="text"></td><td><input id="m1_15" type="text"></td><td><input id="m1_16" type="text"></td></tr>
+  </table>
+  <div class="questions">
+    <div class="q-title">📋 Questions</div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q1.</b> Produis un clap et observe les deux courbes qui apparaissent sur l'oscillogramme. L'une est en rouge, l'autre en vert. Laquelle correspond au microphone le plus proche de la source ? Comment le sais-tu ?</p>
+      <textarea id="ta_1_0" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-rea">REA</span><b>Q2.</b> Complète le tableau pour chaque valeur de \(d\) (change le slider, puis clique "Produire un clap" à chaque fois). Lis \(\Delta t\) sur l'oscillogramme et calcule \(v\).</p>
+      <textarea id="ta_1_1" placeholder="Calculs détaillés…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-val">VAL</span><b>Q3.</b> Les valeurs de \(v\) obtenues sont-elles cohérentes entre elles ? Compare à \( v_{\text{ref}} = 340\ \mathrm{m{\cdot}s^{-1}} \). Que remarques-tu concernant l'amplitude des deux signaux quand \(d\) augmente ?</p>
+      <textarea id="ta_1_2" placeholder="Réponse…"></textarea>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <button class="btn-nav" onclick="showTab(0)">← Précédente</button>
+    <button class="btn-nav" onclick="showTab(2)">Partie suivante →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ONGLET 3 - PÉRIODE & FRÉQUENCE (mesure interactive)
+══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-2">
+  <div class="situation-header">
+    <div class="situation-num">3</div>
+    <div>
+      <span class="seance-badge">🗓 Séance 1</span>
+      <h2>Période, fréquence et hauteur du son</h2>
+      <p>L'oscillogramme montre la variation de pression au cours du temps. <strong>Fais glisser les deux poignées bleues</strong> pour mesurer la période T toi-même, comme avec un réticule sur un oscilloscope réel.</p>
+    </div>
+  </div>
+  <div class="canvas-zone">
+    <canvas id="c2" width="490" height="240" style="cursor:ew-resize"></canvas>
+    <div class="controls">
+      <div class="ctrl-section">Fréquence du son</div>
+      <div class="slider-zone">
+        <label>f = <span id="val2f">440</span> Hz</label>
+        <div class="slider-row">
+          <span style="font-size:11px">grave</span>
+          <input type="range" id="sl2f" min="80" max="2000" value="440" oninput="updateS2()">
+          <span style="font-size:11px">aigu</span>
+        </div>
+      </div>
+      <div class="info-box" style="margin-top:4px">
+        <strong>📏 Ta mesure</strong>
+        T mesurée = <span id="Tmesure" style="font-weight:700;color:var(--orange)">-</span> ms
+      </div>
+      <div class="ctrl-section" style="margin-top:6px">Son</div>
+      <button class="btn btn-sound" id="btnSon2" onclick="toggleSon2()">🔊 Écouter ce son</button>
+    </div>
+  </div>
+  <p style="font-size:13px;margin:12px 0 6px;font-weight:600;color:var(--bleu);">📝 Tableau - Lire T et calculer f :</p>
+  <table class="mesure-table">
+    <tr>
+      <th>\(f\) imposée (Hz)</th><th>\(T\) mesurée (ms)</th><th>\(T\) convertie (s)</th><th>\(f=1/T\) calculée (Hz)</th><th>Hauteur</th>
+    </tr>
+    <tr><td>100</td><td><input id="m2_1" type="text"></td><td><input id="m2_2" type="text"></td><td><input id="m2_3" type="text"></td><td><input id="m2_4" type="text"></td></tr>
+    <tr><td>440</td><td><input id="m2_5" type="text"></td><td><input id="m2_6" type="text"></td><td><input id="m2_7" type="text"></td><td><input id="m2_8" type="text"></td></tr>
+    <tr><td>1000</td><td><input id="m2_9" type="text"></td><td><input id="m2_10" type="text"></td><td><input id="m2_11" type="text"></td><td><input id="m2_12" type="text"></td></tr>
+  </table>
+  <div class="questions">
+    <div class="q-title">📋 Questions</div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q1.</b> Règle f = 440 Hz. Fais glisser les deux poignées bleues pour encadrer <strong>exactement une période</strong>. Lis la valeur T affichée en orange. Que représente cette durée physiquement ?</p>
+      <textarea id="ta_2_0" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q2.</b> Sans changer la fréquence, repositionne les poignées pour encadrer <strong>5 périodes consécutives</strong>. Complète :</p>
+      <div class="carac-bar"><div class="carac-items">
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Durée de 5 périodes :</span><input class="carac-input" type="text" id="ci_2_0" placeholder="……………… ms"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Période \( T = \dfrac{\text{durée}}{5} = \)</span><input class="carac-input" type="text" id="ci_2_1" placeholder="……………… ms"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Pourquoi mesurer plusieurs périodes améliore-t-il la précision ?</span><input class="carac-input" type="text" id="ci_2_2" placeholder="………………………………………………………………………………"></div>
+      </div></div>
+    </div>
+    <div class="question">
+      <p><span class="code code-rea">REA</span><b>Q3.</b> Règle f = 1000 Hz. Mesure le plus grand nombre de périodes possible. Complète :</p>
+      <div class="carac-bar"><div class="carac-items">
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Nombre de périodes mesurées \( n = \)</span><input class="carac-input" type="text" id="ci_2_3" placeholder="……………"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Durée totale mesurée :</span><input class="carac-input" type="text" id="ci_2_4" placeholder="……………… ms"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Période \( T = \dfrac{\text{durée}}{n} = \)</span><input class="carac-input" type="text" id="ci_2_5" placeholder="……………… ms = ……………… s"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Fréquence \( f = \dfrac{1}{T} = \)</span><input class="carac-input" type="text" id="ci_2_6" placeholder="……………… Hz"></div>
+      </div></div>
+    </div>
+    <div class="question">
+      <p><span class="code code-val">VAL</span><b>Q4.</b> Pour f = 440 Hz, la valeur réelle est \( T_{\text{réelle}} = \dfrac{1}{440} \approx 2{,}27\ \text{ms} \). Compare tes deux mesures :</p>
+      <div class="carac-bar"><div class="carac-items">
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Méthode 1 (1 période) : T mesurée =</span><input class="carac-input" type="text" id="ci_2_7" placeholder="……… ms  →  écart = ………………"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Méthode 2 (5 périodes) : T mesurée =</span><input class="carac-input" type="text" id="ci_2_8" placeholder="……… ms  →  écart = ………………"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Quelle méthode est la plus précise ? Pourquoi ?</span><input class="carac-input" type="text" id="ci_2_9" placeholder="………………………………………………………………………………"></div>
+      </div></div>
+    </div>
+    <div class="question">
+      <p><span class="code code-val">VAL</span><b>Q5.</b> Quand f augmente, que se passe-t-il avec T ? Et avec la hauteur du son (écoute !) ? Formule une règle générale liant fréquence et hauteur.</p>
+      <textarea id="ta_2_4" placeholder="Réponse…"></textarea>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <button class="btn-nav" onclick="showTab(1)">← Précédente</button>
+    <button class="btn-nav" onclick="showTab(3)">Partie suivante →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ONGLET 4 - DOMAINES DE FRÉQUENCES
+══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-3">
+  <div class="situation-header">
+    <div class="situation-num">4</div>
+    <div>
+      <span class="seance-badge">🗓 Séance 1 ou 2</span>
+      <h2>Domaines de fréquences</h2>
+      <p>Tous les sons ne sont pas audibles par l'oreille humaine. Selon leur fréquence, on les classe en <strong>infrasons</strong>, <strong>sons audibles</strong> ou <strong>ultrasons</strong>.</p>
+    </div>
+  </div>
+  <div class="slider-zone" style="margin-bottom:10px;background:white;padding:10px;border-radius:8px;border:1px solid var(--gris2);">
+    <label style="font-size:14px;font-weight:700;color:var(--bleu)">Fréquence : <span id="val3f">440</span> Hz - <span id="val3cat" style="color:var(--rouge)">Son audible</span></label>
+    <div class="slider-row" style="margin-top:6px">
+      <span style="font-size:11px">1 Hz</span>
+      <input type="range" id="sl3f" min="1" max="50000" value="440" oninput="updateS3()">
+      <span style="font-size:11px">50 000 Hz</span>
+    </div>
+  </div>
+  <div class="frise-wrap">
+    <div class="frise" id="frise3">
+      <span class="frise-label" style="left:6%">Infrasons</span>
+      <span class="frise-label" style="left:36%">Sons audibles</span>
+      <span class="frise-label" style="left:78%">Ultrasons</span>
+      <div class="frise-cursor" id="friseCursor3" style="left:20%"></div>
+    </div>
+    <div class="frise-limits">
+      <span>1 Hz</span><span>20 Hz</span><span style="margin-left:auto;margin-right:60px">20 kHz</span><span>50 kHz</span>
+    </div>
+  </div>
+  <div class="frise-examples" id="friseExamples3">
+    <div class="frise-example" id="ex3_0"><span class="ex-icon">🌍</span><b>Séismes</b><span class="ex-freq">1–10 Hz (infrasons)</span></div>
+    <div class="frise-example" id="ex3_1"><span class="ex-icon">🐘</span><b>Éléphant</b><span class="ex-freq">14–24 Hz</span></div>
+    <div class="frise-example" id="ex3_2"><span class="ex-icon">🥁</span><b>Grosse caisse</b><span class="ex-freq">50–200 Hz</span></div>
+    <div class="frise-example" id="ex3_3"><span class="ex-icon">🎙️</span><b>Voix humaine</b><span class="ex-freq">80–1100 Hz</span></div>
+    <div class="frise-example" id="ex3_4"><span class="ex-icon">🎹</span><b>Piano (la = 440 Hz)</b><span class="ex-freq">28–4186 Hz</span></div>
+    <div class="frise-example" id="ex3_5"><span class="ex-icon">🐕</span><b>Chien (perception)</b><span class="ex-freq">jusqu'à 65 kHz</span></div>
+    <div class="frise-example" id="ex3_6"><span class="ex-icon">🦇</span><b>Chauve-souris</b><span class="ex-freq">20–100 kHz</span></div>
+    <div class="frise-example" id="ex3_7"><span class="ex-icon">🏥</span><b>Échographie</b><span class="ex-freq">1–20 MHz</span></div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+    <button class="btn btn-sound" onclick="playFreq(10)">🔊 10 Hz</button>
+    <button class="btn btn-sound" onclick="playFreq(100)">🔊 100 Hz</button>
+    <button class="btn btn-sound" onclick="playFreq(440)">🔊 440 Hz</button>
+    <button class="btn btn-sound" onclick="playFreq(1000)">🔊 1 000 Hz</button>
+    <button class="btn btn-sound" onclick="playFreq(4000)">🔊 4 000 Hz</button>
+    <button class="btn btn-sound" onclick="playFreq(18000)">🔊 18 000 Hz</button>
+  </div>
+  <div class="piege-box" style="margin-top:10px">
+    <strong>⚠️ Cas piège !</strong><br>
+    10 Hz et 18 000 Hz sont tous deux inaudibles, mais pour des raisons opposées. Lesquelles ?
+  </div>
+  <div class="questions">
+    <div class="q-title">📋 Questions</div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q1.</b> Place le curseur sur f = 42 000 Hz. Dans quelle catégorie tombe ce son ? Est-il audible par l'être humain ?</p>
+      <textarea id="ta_3_0" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q2.</b> Clique sur "10 Hz" puis "18 000 Hz". Explique dans chaque cas pourquoi le son est inaudible pour l'être humain.</p>
+      <textarea id="ta_3_1" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-val">VAL</span><b>Q3.</b> Une chauve-souris émet des ultrasons à 50 kHz pour se repérer dans l'obscurité. Ce signal est-il audible par un chien ? Par l'être humain ? Justifie en t'appuyant sur les valeurs de la frise.</p>
+      <textarea id="ta_3_2" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-rea">REA</span><b>Q4.</b> Un bateau utilise un sonar pour détecter le fond marin. Il émet une impulsion ultrasonore qui se propage dans l'eau à \( v = 1500\ \mathrm{m{\cdot}s^{-1}} \) et reçoit l'écho après \( \Delta t = 0{,}20\ \text{s} \).</p>
+      <canvas id="cSonar" width="440" height="160" style="margin:8px 0;border-radius:6px;"></canvas>
+      <p style="font-size:13px;margin-top:4px">Calcule la profondeur \(d\) du fond marin. Attention : le signal fait un <strong>aller-retour</strong> !</p>
+      <textarea id="ta_3_3" placeholder="Calcul : d = v × Δt / 2 = …"></textarea>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <button class="btn-nav" onclick="showTab(2)">← Précédente</button>
+    <button class="btn-nav" onclick="showTab(4)">Partie suivante →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ONGLET 5 - NIVEAU SONORE
+══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-4">
+  <div class="situation-header">
+    <div class="situation-num">5</div>
+    <div>
+      <span class="seance-badge">🗓 Séance 2</span>
+      <h2>Intensité et niveau sonore</h2>
+      <p>Le <strong>sonomètre</strong> mesure le niveau sonore en <strong>décibels (dB)</strong>. Niveau sonore et intensité ne sont <strong>pas proportionnels</strong>.</p>
+    </div>
+  </div>
+  <div class="canvas-zone">
+    <canvas id="c4" width="490" height="180"></canvas>
+    <div class="controls">
+      <div class="ctrl-section">Amplitude (volume)</div>
+      <div class="slider-zone">
+        <label>Volume : <span id="val4amp">50</span> %</label>
+        <div class="slider-row">
+          <span style="font-size:11px">🤫</span>
+          <input type="range" id="sl4amp" min="0" max="100" value="50" oninput="updateS4()">
+          <span style="font-size:11px">📢</span>
+        </div>
+      </div>
+      <div class="ctrl-section" style="margin-top:4px">Son</div>
+      <button class="btn btn-sound" id="btnSon4" onclick="toggleSon4()">🔊 Écouter (440 Hz)</button>
+      <div class="info-box" style="margin-top:6px">
+        <strong>Niveau sonore</strong>
+        <div class="db-display" id="dbDisplay">50 dB</div>
+        <div class="db-example" id="dbExample">Conversation normale</div>
+      </div>
+    </div>
+  </div>
+  <div class="jauge-wrap">
+    <div class="jauge-bar">
+      <div class="jauge-fill" id="jaugeFill" style="width:50%"></div>
+      <div class="jauge-cursor" id="jaugeCursor" style="left:50%"></div>
+    </div>
+    <div class="jauge-labels">
+      <span>0 dB<br>(seuil)</span>
+      <span style="text-align:center">60 dB<br>(conversation)</span>
+      <span style="text-align:center">85 dB<br>⚠️ danger</span>
+      <span style="text-align:right">120 dB<br>(douleur)</span>
+    </div>
+  </div>
+  <div class="data-box" style="margin-top:10px">
+    <strong>📊 Exemples</strong>
+    Chuchotement : ~30 dB &nbsp;|&nbsp; Conversation : ~60 dB &nbsp;|&nbsp; Aspirateur : ~70 dB &nbsp;|&nbsp; Marteau-piqueur : ~100 dB &nbsp;|&nbsp; Concert rock : ~110 dB &nbsp;|&nbsp; Réacteur d'avion : ~130 dB
+  </div>
+  <div class="questions">
+    <div class="q-title">📋 Questions</div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q1.</b> Règle le slider sur ≈ 60 dB. Décris l'oscillogramme. Que représente l'amplitude de la courbe ?</p>
+      <textarea id="ta_4_0" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q2.</b> Augmente progressivement le volume. À quel niveau la jauge devient-elle orange ? Rouge ? Que signifient ces couleurs ?</p>
+      <textarea id="ta_4_1" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-rea">REA</span><b>Q3.</b> Un concert de rock affiche 110 dB pendant 2 heures. Cite deux risques et une mesure de protection possible.</p>
+      <textarea id="ta_4_2" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-val">VAL</span><b>Q4.</b> Un élève dit : « 80 dB c'est deux fois plus fort que 40 dB ». Cette affirmation est-elle juste ? Explique en t'appuyant sur la jauge.</p>
+      <textarea id="ta_4_3" placeholder="Réponse…"></textarea>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <button class="btn-nav" onclick="showTab(3)">← Précédente</button>
+    <button class="btn-nav" onclick="showTab(5)">Partie suivante →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ONGLET 6 - TIMBRE
+══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-5">
+  <div class="situation-header">
+    <div class="situation-num">6</div>
+    <div>
+      <span class="seance-badge">🗓 Séance 2</span>
+      <h2>Le timbre du son</h2>
+      <p>Deux instruments peuvent jouer la <strong>même note</strong> mais sonner différemment. Ce qui les distingue est le <strong>timbre</strong>, lié à la <strong>forme du signal</strong> - elle-même déterminée par la présence et l'amplitude des <strong>harmoniques</strong>.</p>
+    </div>
+  </div>
+
+  <!-- PARTIE A : SYNTHÉTISEUR -->
+  <div style="background:var(--bleu3);border-radius:10px;padding:14px 16px;margin-bottom:16px;border:2px solid var(--bleu2)">
+    <h3 style="color:var(--bleu);font-size:14px;margin-bottom:10px">🎛️ Partie A - Compose ton propre son</h3>
+    <p style="font-size:13px;color:#555;margin-bottom:12px">Règle l'amplitude de chaque harmonique avec les sliders. L'oscillogramme se reconstruit en temps réel. Écoute le résultat.</p>
+
+    <div class="slider-zone" style="background:white;padding:10px;border-radius:8px;border:1px solid var(--gris2);margin-bottom:10px">
+      <label style="font-size:13px;font-weight:700;color:var(--bleu)">Fréquence fondamentale : <span id="val5f">440</span> Hz</label>
+      <div class="slider-row" style="margin-top:4px">
+        <span style="font-size:11px">100 Hz</span>
+        <input type="range" id="sl5f" min="100" max="800" value="440" oninput="updateS5()">
+        <span style="font-size:11px">800 Hz</span>
+      </div>
+    </div>
+
+    <!-- Sliders harmoniques -->
+    <div id="harmonicSliders" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-bottom:10px"></div>
+
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start">
+      <canvas id="c5synth" width="440" height="160" style="border-radius:8px;border:2px solid var(--gris2);background:#F8FBFF;flex:1;min-width:260px"></canvas>
+      <div style="display:flex;flex-direction:column;gap:8px;min-width:160px">
+        <button class="btn btn-sound" id="btnSon5synth" onclick="toggleSon5synth()">🔊 Écouter mon son</button>
+        <button class="btn btn-reset" onclick="resetHarmonics()">↺ Réinitialiser</button>
+        <div style="font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:1px;margin-top:4px">Exemples à explorer</div>
+        <button class="btn" style="background:var(--bleu2);color:white" onclick="presetPur()">🎵 Exemple A</button>
+        <button class="btn" style="background:var(--orange);color:white" onclick="presetGuitare()">🎵 Exemple B</button>
+        <button class="btn" style="background:var(--violet);color:white" onclick="presetClarinette()">🎵 Exemple C</button>
+        <div class="info-box" id="infoSynth">
+          <strong>Mon son</strong>
+          Modifie les harmoniques et écoute le résultat !
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PARTIE B : COMPARATEUR INSTRUMENTS -->
+  <div style="background:#FFF8E1;border-radius:10px;padding:14px 16px;margin-bottom:16px;border:2px solid #F0C040">
+    <h3 style="color:#8B6000;font-size:14px;margin-bottom:6px">🎼 Partie B - Identifie les instruments</h3>
+    <p style="font-size:13px;color:#555;margin-bottom:10px">Trois sons sont joués à la même fréquence (440 Hz). Écoute chacun et observe leur oscillogramme. Identifie quel son correspond à quel instrument (son pur / flûte / orgue), puis vérifie.</p>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px">
+      <div style="background:white;border-radius:8px;padding:10px;border:2px solid var(--gris2);text-align:center">
+        <div style="font-weight:700;color:var(--bleu);font-size:13px;margin-bottom:6px">Son A</div>
+        <canvas id="c5instA" width="160" height="90" style="border-radius:6px;border:1px solid var(--gris2);background:#F8FBFF"></canvas>
+        <div style="margin-top:6px">
+          <button class="btn btn-sound" id="btnInstA" onclick="playInstrument('A')" style="width:100%;font-size:12px">🔊 Écouter A</button>
+        </div>
+        <div style="margin-top:6px;font-size:12px">Ton idée : <input type="text" id="guessA" placeholder="…………………" style="border:1px solid var(--gris2);border-radius:4px;padding:3px 6px;font-size:12px;width:100%"></div>
+      </div>
+      <div style="background:white;border-radius:8px;padding:10px;border:2px solid var(--gris2);text-align:center">
+        <div style="font-weight:700;color:var(--bleu);font-size:13px;margin-bottom:6px">Son B</div>
+        <canvas id="c5instB" width="160" height="90" style="border-radius:6px;border:1px solid var(--gris2);background:#F8FBFF"></canvas>
+        <div style="margin-top:6px">
+          <button class="btn btn-sound" id="btnInstB" onclick="playInstrument('B')" style="width:100%;font-size:12px">🔊 Écouter B</button>
+        </div>
+        <div style="margin-top:6px;font-size:12px">Ton idée : <input type="text" id="guessB" placeholder="…………………" style="border:1px solid var(--gris2);border-radius:4px;padding:3px 6px;font-size:12px;width:100%"></div>
+      </div>
+      <div style="background:white;border-radius:8px;padding:10px;border:2px solid var(--gris2);text-align:center">
+        <div style="font-weight:700;color:var(--bleu);font-size:13px;margin-bottom:6px">Son C</div>
+        <canvas id="c5instC" width="160" height="90" style="border-radius:6px;border:1px solid var(--gris2);background:#F8FBFF"></canvas>
+        <div style="margin-top:6px">
+          <button class="btn btn-sound" id="btnInstC" onclick="playInstrument('C')" style="width:100%;font-size:12px">🔊 Écouter C</button>
+        </div>
+        <div style="margin-top:6px;font-size:12px">Ton idée : <input type="text" id="guessC" placeholder="…………………" style="border:1px solid var(--gris2);border-radius:4px;padding:3px 6px;font-size:12px;width:100%"></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <button class="btn" style="background:#8B6000;color:white" onclick="revealInstruments()">🔍 Révéler les instruments</button>
+      <div id="revealResult" style="font-size:13px;font-weight:600;color:var(--vert);display:none"></div>
+    </div>
+  </div>
+
+  <div class="piege-box">
+    <strong>⚠️ À retenir</strong><br>
+    A, B et C ont la <em>même fréquence fondamentale</em> → même hauteur, même période T. C'est la <em>combinaison des harmoniques</em> qui différencie leur timbre.
+  </div>
+
+  <div class="questions">
+    <div class="q-title">📋 Questions</div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q1.</b> Dans la partie A, règle le slider sur "Son pur" (fondamental seul). Décris l'oscillogramme obtenu. Maintenant active progressivement les harmoniques 2, 3, 4, 5. Comment la forme du signal évolue-t-elle ?</p>
+      <textarea id="ta_5_0" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-app">APP</span><b>Q2.</b> Dans la partie B, compare les oscillogrammes de A, B et C. Ont-ils la même période ? La même forme ? Qu'est-ce qui les distingue ?</p>
+      <textarea id="ta_5_1" placeholder="Réponse…"></textarea>
+    </div>
+    <div class="question">
+      <p><span class="code code-rea">REA</span><b>Q3.</b> Dans la partie A, essaie de retrouver par tâtonnement le profil "Exemple B" en réglant manuellement les sliders. Note tes réglages puis compare avec le preset :</p>
+      <div class="carac-bar"><div class="carac-items">
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">H1 (fondamental) :</span><input class="carac-input" type="text" id="ci_5_0" placeholder="………… %"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">H2 (2<sup>e</sup> harmonique) :</span><input class="carac-input" type="text" id="ci_5_1" placeholder="………… %"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">H3 (3<sup>e</sup> harmonique) :</span><input class="carac-input" type="text" id="ci_5_2" placeholder="………… %"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">H4 (4<sup>e</sup> harmonique) :</span><input class="carac-input" type="text" id="ci_5_3" placeholder="………… %"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">H5 (5<sup>e</sup> harmonique) :</span><input class="carac-input" type="text" id="ci_5_4" placeholder="………… %"></div>
+        <div class="carac-item"><span class="carac-tiret">-</span><span class="carac-label">Comparaison avec le preset :</span><input class="carac-input" type="text" id="ci_5_5" placeholder="………………………………………………………………………………"></div>
+      </div></div>
+    </div>
+    <div class="question">
+      <p><span class="code code-val">VAL</span><b>Q4.</b> Une flûte et un orgue jouent le même "la" (440 Hz). Un sonomètre mesure 70 dB pour les deux. Pourtant on les distingue facilement à l'oreille. Explique en utilisant les notions de cette partie.</p>
+      <textarea id="ta_5_3" placeholder="Réponse…"></textarea>
+    </div>
+  </div>
+  <div class="nav-bottom">
+    <button class="btn-nav" onclick="showTab(4)">← Précédente</button>
+    <button class="btn-nav" onclick="showTab(6)">Bilan →</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ONGLET 7 - BILAN COURS
+══════════════════════════════════════════ -->
+<div class="tab-content" id="tab-6">
+  <div class="situation-header">
+    <div class="situation-num">7</div>
+    <div>
+      <span class="seance-badge">🗓 Fin de séance 2</span>
+      <h2>Bilan - Synthèse du cours</h2>
+      <p>Complète le texte à trous, réponds aux QCM et complète le tableau récapitulatif pour vérifier que tu as bien retenu les notions essentielles.</p>
+    </div>
+  </div>
+
+  <!-- TEXTE À TROUS -->
+  <div class="bilan-section">
+    <h3>📝 A - Texte à trous</h3>
+    <div class="trou-zone" id="trouxZone">
+      Le son est une variation de <input class="trou" id="t0" data-rep="pression" placeholder="…………"> qui se propage dans un milieu
+      <input class="trou" id="t1" data-rep="solide" placeholder="…………">, <input class="trou" id="t1b" data-rep="liquide" placeholder="…………"> ou <input class="trou" id="t1c" data-rep="gazeux" placeholder="…………">.
+      Il ne peut pas se propager dans le <input class="trou" id="t2" data-rep="vide" placeholder="…………">.<br><br>
+
+      La vitesse du son dans l'air est d'environ <input class="trou" id="t3" data-rep="340" placeholder="……"> m·s<sup>-1</sup>.
+      Elle est plus grande dans l'eau que dans l'air, et encore plus grande dans les solides.<br><br>
+
+      La <input class="trou" id="t6" data-rep="période" placeholder="…………"> T est la plus petite durée au bout de laquelle le signal se répète.
+      La fréquence se calcule par la relation \( f = \) <input class="trou" id="t7" data-rep="1/T" placeholder="……">.
+      L'unité de la fréquence est le <input class="trou" id="t8" data-rep="hertz" placeholder="…………"> (Hz).<br><br>
+
+      Un son grave a une fréquence <input class="trou" id="t9" data-rep="basse" placeholder="…………">,
+      un son aigu a une fréquence <input class="trou" id="t10" data-rep="élevée" placeholder="…………">.<br><br>
+
+      Les <input class="trou" id="t11" data-rep="infrasons" placeholder="…………"> ont une fréquence inférieure à 20 Hz.
+      Les <input class="trou" id="t12" data-rep="ultrasons" placeholder="…………"> ont une fréquence supérieure à 20 000 Hz.
+      Entre les deux se trouvent les sons <input class="trou" id="t13" data-rep="audibles" placeholder="…………">.<br><br>
+
+      Le niveau sonore se mesure en <input class="trou" id="t14" data-rep="décibels" placeholder="…………"> à l'aide d'un
+      <input class="trou" id="t15" data-rep="sonomètre" placeholder="…………">.
+      À partir de <input class="trou" id="t16" data-rep="85" placeholder="……"> dB, une exposition prolongée est dangereuse pour l'audition.<br><br>
+
+      Deux sons de même hauteur peuvent se distinguer par leur <input class="trou" id="t17" data-rep="timbre" placeholder="…………">,
+      qui correspond à la <input class="trou" id="t18" data-rep="forme" placeholder="…………"> de leur signal sur l'oscillogramme.
+    </div>
+  </div>
+
+  <!-- QCM -->
+  <div class="bilan-section">
+    <h3>✅ B - QCM</h3>
+    <div class="qcm-item" id="qcm0">
+      <p>1. Dans quel milieu le son se propage-t-il le plus vite ?</p>
+      <div class="qcm-choices">
+        <button class="qcm-btn" onclick="selectQCM(0,this,false)">L'air</button>
+        <button class="qcm-btn" onclick="selectQCM(0,this,false)">L'eau</button>
+        <button class="qcm-btn" onclick="selectQCM(0,this,true)">L'acier</button>
+        <button class="qcm-btn" onclick="selectQCM(0,this,false)">Le vide</button>
+      </div>
+    </div>
+    <div class="qcm-item" id="qcm1">
+      <p>2. Un son a une période T = 5 ms. Quelle est sa fréquence ?</p>
+      <div class="qcm-choices">
+        <button class="qcm-btn" onclick="selectQCM(1,this,false)">5 Hz</button>
+        <button class="qcm-btn" onclick="selectQCM(1,this,false)">50 Hz</button>
+        <button class="qcm-btn" onclick="selectQCM(1,this,true)">200 Hz</button>
+        <button class="qcm-btn" onclick="selectQCM(1,this,false)">2000 Hz</button>
+      </div>
+    </div>
+    <div class="qcm-item" id="qcm2">
+      <p>3. Un dauphin émet des sons à 80 kHz. À quelle catégorie appartiennent-ils ?</p>
+      <div class="qcm-choices">
+        <button class="qcm-btn" onclick="selectQCM(2,this,false)">Infrasons</button>
+        <button class="qcm-btn" onclick="selectQCM(2,this,false)">Sons audibles</button>
+        <button class="qcm-btn" onclick="selectQCM(2,this,true)">Ultrasons</button>
+      </div>
+    </div>
+    <div class="qcm-item" id="qcm3">
+      <p>4. Deux instruments jouent le même "la" à 440 Hz. Qu'est-ce qui les distingue ?</p>
+      <div class="qcm-choices">
+        <button class="qcm-btn" onclick="selectQCM(3,this,false)">La hauteur</button>
+        <button class="qcm-btn" onclick="selectQCM(3,this,false)">La fréquence</button>
+        <button class="qcm-btn" onclick="selectQCM(3,this,true)">Le timbre</button>
+        <button class="qcm-btn" onclick="selectQCM(3,this,false)">La période</button>
+      </div>
+    </div>
+    <div class="qcm-item" id="qcm4">
+      <p>5. À partir de quel niveau sonore une exposition prolongée est-elle dangereuse ?</p>
+      <div class="qcm-choices">
+        <button class="qcm-btn" onclick="selectQCM(4,this,false)">60 dB</button>
+        <button class="qcm-btn" onclick="selectQCM(4,this,true)">85 dB</button>
+        <button class="qcm-btn" onclick="selectQCM(4,this,false)">100 dB</button>
+        <button class="qcm-btn" onclick="selectQCM(4,this,false)">120 dB</button>
+      </div>
+    </div>
+    <button class="btn-corriger" onclick="corrigerBilan()">🔍 Corriger tout</button>
+    <div class="score-box" id="scoreBox" style="display:none">
+      <div class="score-num" id="scoreNum">-</div>
+      <p id="scoreMsg">-</p>
+    </div>
+  </div>
+
+  <!-- TABLEAU RÉCAPITULATIF -->
+  <div class="bilan-section">
+    <h3>📊 C - Tableau de synthèse</h3>
+    <table class="synth-table">
+      <tr><th>Grandeur</th><th>Symbole</th><th>Unité</th><th>Formule / Valeur clé</th></tr>
+      <tr><td>Vitesse du son (air)</td><td>\(v_{\text{son}}\)</td><td>m·s<sup>-1</sup></td><td>\( v \approx 340\ \mathrm{m{\cdot}s^{-1}} \)</td></tr>
+      <tr><td>Célérité générale</td><td>\(v\)</td><td>m·s<sup>-1</sup></td><td>\( v = d / \Delta t \)</td></tr>
+      <tr><td>Période</td><td>\(T\)</td><td>s</td><td>Lue sur l'oscillogramme</td></tr>
+      <tr><td>Fréquence</td><td>\(f\)</td><td>Hz</td><td>\( f = 1/T \)</td></tr>
+      <tr><td>Infrasons</td><td>-</td><td>Hz</td><td>\( f < 20\ \text{Hz} \)</td></tr>
+      <tr><td>Sons audibles</td><td>-</td><td>Hz</td><td>\( 20\ \text{Hz} \leq f \leq 20\ \text{kHz} \)</td></tr>
+      <tr><td>Ultrasons</td><td>-</td><td>Hz</td><td>\( f > 20\ \text{kHz} \)</td></tr>
+      <tr><td>Niveau sonore</td><td>\(L\)</td><td>dB</td><td>Mesuré par un sonomètre</td></tr>
+      <tr><td>Seuil de danger</td><td>-</td><td>dB</td><td>\( L > 85\ \text{dB} \) (prolongé)</td></tr>
+    </table>
+  </div>
+
+  <div class="nav-bottom"><button class="btn-nav" onclick="showTab(5)">← Retour au timbre</button></div>
+</div>
+
+</div><!-- fin tabs-wrapper -->
+
+<script>
+
+// ══ AUDIO EMBARQUÉ : supprimé (synthèse additive utilisée)
+// ══ WEB AUDIO ══════════════════════════════════════════
+let audioCtx = null;
+function getCtx(){
+  if(!audioCtx) audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+
+function playTone(freq,dur=1.2,gain=0.18,type='sine'){
+  const ctx=getCtx(),osc=ctx.createOscillator(),g=ctx.createGain();
+  osc.type=type; osc.frequency.value=freq; g.gain.value=gain;
+  osc.connect(g); g.connect(ctx.destination); osc.start();
+  if(dur>0){g.gain.setTargetAtTime(0,ctx.currentTime+dur-0.05,0.05);osc.stop(ctx.currentTime+dur+0.1);}
+  return{osc,gain:g};
+}
+
+function playComposite(freq,dur=1.5,mg=0.15){
+  const ctx=getCtx();
+  const h=[1,2,3,4,5],a=[1,0.5,0.33,0.25,0.15];
+  return h.map((hh,i)=>{
+    const o=ctx.createOscillator(),g=ctx.createGain();
+    o.type='sine'; o.frequency.value=freq*hh; g.gain.value=a[i]*mg;
+    o.connect(g); g.connect(ctx.destination); o.start();
+    if(dur>0){g.gain.setTargetAtTime(0,ctx.currentTime+dur-0.05,0.05);o.stop(ctx.currentTime+dur+0.1);}
+    return{o,g};
+  });
+}
+
+function playClap(){
+  const ctx=getCtx();
+  const buf=ctx.createBuffer(1,ctx.sampleRate*0.12,ctx.sampleRate);
+  const d=buf.getChannelData(0);
+  for(let i=0;i<d.length;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,4);
+  const src=ctx.createBufferSource(),g=ctx.createGain();
+  g.gain.value=0.6; src.buffer=buf; src.connect(g); g.connect(ctx.destination); src.start();
+}
+
+function playFreq(f){
+  if(f<=10) return; // 10 Hz = infrason → silence total
+  else if(f>18000){playClap();return;}
+  else playTone(f,1.0,0.18);
+}
+
+// Son onglet 1
+let son0Playing=false,son0Node=null;
+function toggleSon0(){
+  const btn=document.getElementById('btnSon0');
+  if(son0Playing){
+    if(son0Node){try{son0Node.osc.stop();}catch(e){} son0Node=null;}
+    son0Playing=false; btn.textContent='🔊 Écouter'; btn.classList.remove('playing');
+  } else {
+    if(milieu==='vide'){alert('Le son ne se propage pas dans le vide !');return;}
+    son0Playing=true; btn.textContent='⏹ Arrêter'; btn.classList.add('playing');
+    const freqs={air:340,eau:600,bois:500,acier:880};
+    son0Node=playTone(freqs[milieu]||440,0,0.18);
+  }
+}
+
+// Son onglet 3
+let son2Playing=false,oscNode2=null;
+function toggleSon2(){
+  const btn=document.getElementById('btnSon2');
+  if(son2Playing){
+    if(oscNode2){try{oscNode2.osc.stop();}catch(e){} oscNode2=null;}
+    son2Playing=false; btn.textContent='🔊 Écouter ce son'; btn.classList.remove('playing');
+  } else {
+    son2Playing=true; btn.textContent='⏹ Arrêter'; btn.classList.add('playing');
+    oscNode2=playTone(parseInt(document.getElementById('sl2f').value),0,0.18);
+  }
+}
+function updateSon2Freq(){if(son2Playing&&oscNode2) oscNode2.osc.frequency.value=parseInt(document.getElementById('sl2f').value);}
+
+// Son onglet 5
+let son4Playing=false,oscNode4=null,gainNode4=null;
+function toggleSon4(){
+  const btn=document.getElementById('btnSon4');
+  if(son4Playing){
+    if(oscNode4){try{oscNode4.osc.stop();}catch(e){} oscNode4=null;gainNode4=null;}
+    son4Playing=false; btn.textContent='🔊 Écouter (440 Hz)'; btn.classList.remove('playing');
+  } else {
+    son4Playing=true; btn.textContent='⏹ Arrêter'; btn.classList.add('playing');
+    const amp=parseInt(document.getElementById('sl4amp').value)/100;
+    oscNode4=playTone(440,0,amp*0.3); gainNode4=oscNode4.gain;
+  }
+}
+function updateSon4Gain(){if(son4Playing&&gainNode4) gainNode4.gain.value=parseInt(document.getElementById('sl4amp').value)/100*0.3;}
+
+// Son onglet 6
+// (anciennes fonctions son5a/son5b remplacées par le synthétiseur onglet 6)
+
+// ══ ONGLET 1 - PROPAGATION 5 MILIEUX ══════════════════
+const MILIEUX={
+  air:  {v:340, label:'AIR',   bg:'#E8F4FD', partColor:'#5B9BD5', speed:1.0,  vide:false},
+  eau:  {v:1500,label:'EAU',   bg:'#D6EAF8', partColor:'#1A6FA0', speed:4.4,  vide:false},
+  bois: {v:3800,label:'BOIS',  bg:'#FAF0E6', partColor:'#8B5E3C', speed:11.2, vide:false},
+  acier:{v:5000,label:'ACIER', bg:'#ECF0F1', partColor:'#555F6E', speed:14.7, vide:false},
+  vide: {v:0,   label:'VIDE',  bg:'#1a1a2e', partColor:'#888',    speed:0,    vide:true},
+};
+let milieu='air', anim0Running=false, anim0Frame=0, anim0RAF=null;
+
+function setMilieu(m){
+  milieu=m;
+  document.querySelectorAll('.btn-milieu').forEach(b=>b.classList.remove('active'));
+  document.getElementById('m_'+m).classList.add('active');
+  const mi=MILIEUX[m];
+  let infoHtml;
+  if(mi.vide){
+    infoHtml='<strong>Milieu : VIDE</strong>Aucune particule → le son ne peut pas se propager !';
+  } else {
+    infoHtml=`<strong>Milieu : ${mi.label}</strong>\\( v = ${mi.v.toLocaleString('fr')} \\ \\mathrm{m{\\cdot}s^{-1}} \\)`;
+  }
+  document.getElementById('info0').innerHTML=infoHtml;
+  resetAnim0();
+  if(window.renderMathInElement) renderMathInElement(document.getElementById('info0'),{delimiters:[{left:'\\(',right:'\\)',display:false}],throwOnError:false});
+  if(son0Playing){
+    if(son0Node){try{son0Node.osc.stop();}catch(e){} son0Node=null;}
+    son0Playing=false;
+    document.getElementById('btnSon0').textContent='🔊 Écouter';
+    document.getElementById('btnSon0').classList.remove('playing');
+  }
+}
+
+function toggleAnim0(){
+  if(MILIEUX[milieu].vide){drawS0();return;}
+  if(anim0Running){
+    anim0Running=false; cancelAnimationFrame(anim0RAF);
+    document.getElementById('btn0anim').textContent='▶ Lancer';
+    document.getElementById('btn0anim').className='btn btn-green';
+  } else {
+    anim0Running=true;
+    document.getElementById('btn0anim').textContent='⏸ Pause';
+    document.getElementById('btn0anim').className='btn btn-stop';
+    animLoop0();
+  }
+}
+function resetAnim0(){
+  anim0Running=false; cancelAnimationFrame(anim0RAF); anim0Frame=0;
+  document.getElementById('btn0anim').textContent='▶ Lancer';
+  document.getElementById('btn0anim').className='btn btn-green';
+  drawS0();
+}
+function animLoop0(){anim0Frame++;drawS0();if(anim0Running)anim0RAF=requestAnimationFrame(animLoop0);}
+
+function drawS0(){
+  const can=document.getElementById('c0'),ctx=can.getContext('2d');
+  const W=can.width,H=can.height;
+  ctx.clearRect(0,0,W,H);
+  const mi=MILIEUX[milieu];
+  ctx.fillStyle=mi.bg; ctx.fillRect(0,0,W,H);
+
+  if(mi.vide){
+    ctx.fillStyle='#888'; ctx.font='16px Arial'; ctx.textAlign='center';
+    ctx.fillText('🌌 Vide - aucun milieu matériel',W/2,H/2-16);
+    ctx.font='13px Arial';
+    ctx.fillText('Le son ne peut pas se propager.',W/2,H/2+10);
+    ctx.textAlign='left'; return;
+  }
+
+  const N=26,rows=4;
+  const waveFront=(anim0Frame*mi.speed*1.5)%(W+60)-30;
+  const density=mi===MILIEUX.acier?1.6:mi===MILIEUX.bois?1.3:mi===MILIEUX.eau?1.2:1.0;
+
+  for(let r=0;r<rows;r++){
+    for(let i=0;i<N;i++){
+      const baseX=(i+0.5)*(W/N);
+      const baseY=(r+0.5)*(H/rows);
+      const dist=baseX-waveFront;
+      const compress=Math.exp(-dist*dist/2200)*(dist>-20?1:0);
+      const dx=compress*8*density*Math.sin((baseX-waveFront)*0.08);
+      const x=baseX+dx;
+      const radius=3.5+compress*2*density;
+      const t=Math.min(compress*density,1);
+      ctx.beginPath(); ctx.arc(x,baseY,radius,0,2*Math.PI);
+      ctx.fillStyle=mi.partColor;
+      ctx.globalAlpha=0.5+t*0.5;
+      ctx.fill(); ctx.globalAlpha=1;
+    }
+  }
+
+  if(waveFront>0&&waveFront<W){
+    ctx.strokeStyle='rgba(255,80,80,0.55)'; ctx.lineWidth=2; ctx.setLineDash([6,4]);
+    ctx.beginPath(); ctx.moveTo(waveFront,0); ctx.lineTo(waveFront,H); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#C00000'; ctx.font='bold 11px Arial'; ctx.textAlign='left';
+    ctx.fillText('front →',waveFront+4,16);
+  }
+  ctx.fillStyle='rgba(255,255,255,0.7)'; ctx.fillRect(0,H-20,W,20);
+  ctx.fillStyle='#555'; ctx.font='12px Arial'; ctx.textAlign='left';
+  ctx.fillText('compression ← → raréfaction',8,H-6);
+  ctx.fillStyle=mi.partColor; ctx.textAlign='right';
+  ctx.fillText(`${mi.label} · v = ${mi.v.toLocaleString('fr')} m/s`,W-8,H-6);
+  ctx.textAlign='left';
+}
+
+// ══ ANIMATION CLOCHE À VIDE ═══════════════════════════
+let clocheRunning=false, clocheRAF=null, clocheAir=1.0; // 1.0 = plein, 0 = vide
+let clocheSonNode=null, clocheSonPlaying=false;
+let clocheGainNode=null;
+
+function toggleCloche(){
+  const btn=document.getElementById('btnCloche');
+  if(clocheRunning){
+    clocheRunning=false; cancelAnimationFrame(clocheRAF);
+    btn.textContent='▶ Pomper l\'air'; btn.className='btn btn-green';
+  } else {
+    if(clocheAir<=0.01) return;
+    clocheRunning=true;
+    btn.textContent='⏸ Pause'; btn.className='btn btn-stop';
+    animCloche();
+  }
+}
+
+function resetCloche(){
+  clocheRunning=false; cancelAnimationFrame(clocheRAF);
+  clocheAir=1.0;
+  document.getElementById('btnCloche').textContent='▶ Pomper l\'air';
+  document.getElementById('btnCloche').className='btn btn-green';
+  // Arrêter le son s'il tourne
+  if(clocheSonPlaying){
+    if(clocheSonNode){
+      try{clocheSonNode.osc.stop();}catch(e){}
+      try{clocheSonNode.osc2.stop();}catch(e){}
+      try{clocheSonNode.lfo.stop();}catch(e){}
+      clocheSonNode=null; clocheGainNode=null;
+    }
+    clocheSonPlaying=false;
+    document.getElementById('btnSonCloche').textContent='🔊 Écouter le réveil';
+    document.getElementById('btnSonCloche').classList.remove('playing');
+  }
+  updateClocheInfo();
+  drawCloche();
+}
+
+function toggleSonCloche(){
+  const btn=document.getElementById('btnSonCloche');
+  if(clocheSonPlaying){
+    // Arrêter TOUS les oscillateurs
+    if(clocheSonNode){
+      try{clocheSonNode.osc.stop();}catch(e){}
+      try{clocheSonNode.osc2.stop();}catch(e){}
+      try{clocheSonNode.lfo.stop();}catch(e){}
+      clocheSonNode=null; clocheGainNode=null;
+    }
+    clocheSonPlaying=false; btn.textContent='🔊 Écouter le réveil'; btn.classList.remove('playing');
+  } else {
+    clocheSonPlaying=true; btn.textContent='⏹ Arrêter'; btn.classList.add('playing');
+    const ctx=getCtx();
+    const osc1=ctx.createOscillator(), osc2=ctx.createOscillator();
+    const g=ctx.createGain();
+    osc1.type='square'; osc1.frequency.value=880;
+    osc2.type='square'; osc2.frequency.value=1100;
+    // Volume initial selon l'air courant
+    g.gain.cancelScheduledValues(0);
+    g.gain.value = clocheAir < 0.05 ? 0 : 0.05 * Math.pow(clocheAir, 3);
+    osc1.connect(g); osc2.connect(g); g.connect(ctx.destination);
+    osc1.start(); osc2.start();
+    // Tremolo sur nœud séparé (ne touche pas g.gain)
+    const lfo=ctx.createOscillator();
+    const lfoGain=ctx.createGain();
+    const tremoloGain=ctx.createGain();
+    lfo.frequency.value=8; lfoGain.gain.value=0.005; tremoloGain.gain.value=1;
+    lfo.connect(lfoGain); lfoGain.connect(tremoloGain.gain);
+    osc1.connect(tremoloGain); osc2.connect(tremoloGain);
+    // On utilise g comme gain principal uniquement
+    lfo.start();
+    clocheSonNode={osc:osc1, osc2, lfo, gain:g};
+    clocheGainNode=g;
+  }
+}
+
+function animCloche(){
+  clocheAir=Math.max(0, clocheAir-0.003);
+  // Adapter le volume directement à chaque frame - pas de scheduler AudioParam
+  if(clocheGainNode){
+    // Courbe cubique : tombe à ~1% dès 30% d'air, silence total sous 5%
+    const targetGain = clocheAir < 0.05 ? 0 : 0.05 * Math.pow(clocheAir, 3);
+    clocheGainNode.gain.cancelScheduledValues(0);
+    clocheGainNode.gain.value = targetGain;
+  }
+  updateClocheInfo();
+  drawCloche();
+  if(clocheAir>0.005 && clocheRunning){
+    clocheRAF=requestAnimationFrame(animCloche);
+  } else {
+    clocheRunning=false;
+    document.getElementById('btnCloche').textContent='▶ Pomper l\'air';
+    document.getElementById('btnCloche').className='btn btn-green';
+    // Silence immédiat puis coupure des oscillateurs
+    if(clocheGainNode){
+      clocheGainNode.gain.cancelScheduledValues(0);
+      clocheGainNode.gain.value = 0;
+      setTimeout(()=>{
+        if(clocheSonNode){
+          try{clocheSonNode.osc.stop();}catch(e){}
+          try{clocheSonNode.osc2.stop();}catch(e){}
+          try{clocheSonNode.lfo.stop();}catch(e){}
+          clocheSonNode=null; clocheGainNode=null;
+        }
+        clocheSonPlaying=false;
+        document.getElementById('btnSonCloche').textContent='🔊 Écouter le réveil';
+        document.getElementById('btnSonCloche').classList.remove('playing');
+      }, 100);
+    }
+  }
+}
+
+function updateClocheInfo(){
+  const pct=Math.round(clocheAir*100);
+  document.getElementById('clocheAirPct').textContent=pct+' %';
+  const sonEl=document.getElementById('clocheSonEtat');
+  if(pct>70){sonEl.textContent='Fort 🔊'; sonEl.style.color='var(--vert)';}
+  else if(pct>40){sonEl.textContent='Faible 🔉'; sonEl.style.color='var(--orange)';}
+  else if(pct>10){sonEl.textContent='Très faible 🔈'; sonEl.style.color='#E67E22';}
+  else{sonEl.textContent='Inaudible 🔇'; sonEl.style.color='var(--rouge)';}
+}
+
+function drawCloche(){
+  const can=document.getElementById('cCloche');
+  if(!can) return;
+  const ctx=can.getContext('2d'), W=can.width, H=can.height;
+  ctx.clearRect(0,0,W,H);
+
+  // Fond noir → bleu nuit selon quantité d'air
+  const bgBlue=Math.round(clocheAir*40);
+  ctx.fillStyle=`rgb(${bgBlue},${bgBlue},${20+bgBlue*2})`;
+  ctx.fillRect(0,0,W,H);
+
+  // ── Socle ──
+  ctx.fillStyle='#555';
+  ctx.beginPath(); ctx.roundRect(W/2-70,H-28,140,22,4); ctx.fill();
+
+  // ── Cloche en verre (ellipse + dôme) ──
+  const cx=W/2, cy=H-30, rx=62, ry=130;
+  ctx.save();
+  // Dôme
+  ctx.beginPath();
+  ctx.moveTo(cx-rx, cy);
+  ctx.bezierCurveTo(cx-rx, cy-ry*1.1, cx+rx, cy-ry*1.1, cx+rx, cy);
+  ctx.closePath();
+  ctx.fillStyle='rgba(150,210,255,0.08)';
+  ctx.fill();
+  ctx.strokeStyle='rgba(150,220,255,0.55)';
+  ctx.lineWidth=2.5;
+  ctx.stroke();
+  // Reflet
+  ctx.beginPath();
+  ctx.moveTo(cx-rx+10, cy-20);
+  ctx.bezierCurveTo(cx-rx+6, cy-ry*0.8, cx-rx+30, cy-ry*1.0, cx-rx+32, cy-ry*0.6);
+  ctx.strokeStyle='rgba(200,240,255,0.35)';
+  ctx.lineWidth=6;
+  ctx.stroke();
+  ctx.restore();
+
+  // ── Particules d'air ──
+  const N=Math.round(clocheAir*38);
+  // Positions stables basées sur index (pas aléatoires)
+  for(let i=0;i<N;i++){
+    const angle=(i/38)*2*Math.PI*3.7;
+    const r=(i/38)*0.85;
+    const px=cx + Math.cos(angle)*rx*r*0.82;
+    const py=cy - 30 - Math.sin(angle)*ry*r*0.75;
+    if(py<cy-ry*1.05||py>cy-5) continue;
+    const alpha=0.4+clocheAir*0.4;
+    ctx.beginPath(); ctx.arc(px,py,2.8,0,2*Math.PI);
+    ctx.fillStyle=`rgba(100,180,240,${alpha})`;
+    ctx.fill();
+  }
+
+  // ── Pompe (bas gauche) ──
+  const pumpX=22, pumpY=H-30;
+  // Tuyau vers la cloche
+  ctx.strokeStyle='rgba(120,120,120,0.6)'; ctx.lineWidth=3; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(pumpX+14,pumpY-20); ctx.lineTo(cx-rx,cy-10); ctx.stroke();
+  ctx.setLineDash([]);
+  // Corps pompe
+  ctx.fillStyle='#666';
+  ctx.fillRect(pumpX,pumpY-40,28,40);
+  ctx.fillStyle='#888';
+  ctx.fillRect(pumpX+4,pumpY-48,20,12);
+  if(clocheRunning){
+    // Piston animé
+    const pistonY=pumpY-40+((Date.now()/300)%1)*20;
+    ctx.fillStyle='#AAA'; ctx.fillRect(pumpX+2,pistonY,24,6);
+  }
+  ctx.fillStyle='#AAA'; ctx.font='10px Arial'; ctx.textAlign='center';
+  ctx.fillText('pompe',pumpX+14,pumpY+10);
+
+  // ── Réveil ──
+  const rx2=cx, ry2=cy-46;
+  // Corps
+  ctx.beginPath(); ctx.arc(rx2,ry2,18,0,2*Math.PI);
+  const alarmGrad=ctx.createRadialGradient(rx2-5,ry2-5,2,rx2,ry2,18);
+  alarmGrad.addColorStop(0,'#E8C040'); alarmGrad.addColorStop(1,'#C09000');
+  ctx.fillStyle=alarmGrad; ctx.fill();
+  ctx.strokeStyle='#8B6800'; ctx.lineWidth=2; ctx.stroke();
+  // Clochettes
+  ctx.fillStyle='#C09000';
+  ctx.beginPath(); ctx.arc(rx2-12,ry2-16,7,0,2*Math.PI); ctx.fill(); ctx.stroke();
+  ctx.beginPath(); ctx.arc(rx2+12,ry2-16,7,0,2*Math.PI); ctx.fill(); ctx.stroke();
+  // Aiguilles
+  const t=Date.now()/1000;
+  ctx.strokeStyle='#333'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(rx2,ry2);
+  ctx.lineTo(rx2+Math.cos(t*2)*10, ry2+Math.sin(t*2)*10); ctx.stroke();
+  ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(rx2,ry2);
+  ctx.lineTo(rx2+Math.cos(t*0.2)*7, ry2+Math.sin(t*0.2)*7); ctx.stroke();
+  // Cadran
+  ctx.fillStyle='rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.arc(rx2,ry2,3,0,2*Math.PI); ctx.fill();
+
+  // Ondes sonores émises (si air suffisant)
+  if(clocheAir>0.05){
+    const nWaves=3;
+    const phase=(Date.now()/400)%1;
+    for(let w=0;w<nWaves;w++){
+      const r=20+(w+phase)*15;
+      const alpha=clocheAir*0.4*(1-(w+phase)/nWaves);
+      if(alpha<0.02) continue;
+      ctx.beginPath(); ctx.arc(rx2,ry2,r,0,2*Math.PI);
+      ctx.strokeStyle=`rgba(255,220,100,${alpha})`;
+      ctx.lineWidth=1.5; ctx.stroke();
+    }
+  }
+
+  // Label air restant
+  ctx.fillStyle='rgba(255,255,255,0.7)';
+  ctx.font='bold 12px Arial'; ctx.textAlign='center';
+  const pct=Math.round(clocheAir*100);
+  ctx.fillText(`Air : ${pct} %`, cx, 18);
+  ctx.textAlign='left';
+
+  // Relancer si animation en cours
+  if(clocheRunning) requestAnimationFrame(drawCloche);
+}
+
+// ══ ONGLET 2 - VITESSE DU SON ══════════════════════════
+let anim1Running=false,anim1Frame=0,anim1RAF=null,clapDone=false;
+
+function updateS1(){
+  const d=parseInt(document.getElementById('sl1d').value);
+  document.getElementById('val1d').textContent=d;
+  if(clapDone) drawS1();
+  else drawS1empty();
+}
+
+function doClap(){
+  playClap();
+  clapDone=true;
+  anim1Frame=0;
+  if(anim1Running){cancelAnimationFrame(anim1RAF);anim1Running=false;}
+  anim1Running=true;
+  animLoop1();
+}
+
+function resetAnim1(){
+  anim1Running=false; cancelAnimationFrame(anim1RAF);
+  anim1Frame=0; clapDone=false;
+  document.getElementById('info1').innerHTML='<strong>En attente</strong>Clique sur "Produire un clap" pour déclencher l\'acquisition.';
+  drawS1empty();
+}
+
+function animLoop1(){
+  anim1Frame++;
+  drawS1();
+  // Stopper après que le signal soit complètement visible
+  if(anim1Frame<180&&anim1Running) anim1RAF=requestAnimationFrame(animLoop1);
+  else anim1Running=false;
+}
+
+function drawS1empty(){
+  const can=document.getElementById('c1'),ctx=can.getContext('2d');
+  const W=can.width,H=can.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#F8FBFF'; ctx.fillRect(0,0,W,H);
+  const schH=90;
+  // Schéma dispositif
+  drawDispositif(ctx,W,schH,parseInt(document.getElementById('sl1d').value),false);
+  // Oscillogrammes vides
+  const oscH=(H-schH-20)/2;
+  ['#FFF0F0','#F0FFF0'].forEach((bg,ch)=>{
+    const y0=schH+8+ch*(oscH+6);
+    ctx.fillStyle=bg; ctx.fillRect(30,y0,W-40,oscH);
+    ctx.strokeStyle='#DDD'; ctx.lineWidth=1; ctx.strokeRect(30,y0,W-40,oscH);
+    ctx.fillStyle='#BBB'; ctx.font='12px Arial'; ctx.textAlign='center';
+    ctx.fillText('En attente du signal…',W/2,y0+oscH/2+5);
+    ctx.textAlign='left';
+    // Label couleur seulement (pas M1/M2)
+    const col=ch===0?'#C00000':'#1E6B2E';
+    ctx.fillStyle=col; ctx.fillRect(2,y0+2,8,oscH-4);
+  });
+  // Graduation t
+  drawGraduation(ctx,W,schH,H);
+}
+
+function drawS1(){
+  const can=document.getElementById('c1'),ctx=can.getContext('2d');
+  const W=can.width,H=can.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#F8FBFF'; ctx.fillRect(0,0,W,H);
+
+  const d=parseInt(document.getElementById('sl1d').value);
+  const dtms=d/34; // ms
+  const schH=90;
+  const oscH=(H-schH-20)/2;
+  const tMax=10; // ms affichées
+
+  // Schéma
+  drawDispositif(ctx,W,schH,d,true);
+
+  // Progress d'apparition du signal (0→1 sur 60 frames)
+  const progress=Math.min(anim1Frame/60,1);
+
+  // Oscillogrammes
+  const delay0=1.2; // ms
+  const delay1=delay0+dtms;
+  // Amplitude M2 diminue avec distance (atténuation géométrique)
+  const ampM1=oscH/2-10;
+  const ampM2=ampM1*Math.max(0.25,(1-d/160));
+
+  [0,1].forEach(ch=>{
+    const delay=ch===0?delay0:delay1;
+    const amp=ch===0?ampM1:ampM2;
+    const y0=schH+8+ch*(oscH+6);
+    const bg=ch===0?'#FFF0F0':'#F0FFF0';
+    ctx.fillStyle=bg; ctx.fillRect(30,y0,W-40,oscH);
+    ctx.strokeStyle='#DDD'; ctx.lineWidth=1; ctx.strokeRect(30,y0,W-40,oscH);
+    const col=ch===0?'#C00000':'#1E6B2E';
+    ctx.fillStyle=col; ctx.fillRect(2,y0+2,8,oscH-4);
+    const yc=y0+oscH/2;
+    // Baseline
+    ctx.strokeStyle=col+'44'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(30,yc); ctx.lineTo(W-10,yc); ctx.stroke();
+    // Signal avec fondu d'apparition
+    ctx.strokeStyle=col; ctx.lineWidth=1.8; ctx.save();
+    ctx.beginPath();
+    for(let px=30;px<W-10;px++){
+      const t=((px-30)/(W-40))*tMax;
+      let a=0;
+      if(t>=delay&&t<delay+2.8){
+        const dt2=t-delay;
+        // N'affiche que jusqu'à progress
+        const tFrac=(t-delay)/2.8;
+        if(tFrac<=progress){
+          a=Math.sin(2*Math.PI*800*dt2/1000)*Math.exp(-dt2*2)*amp;
+        }
+      }
+      if(px===30) ctx.moveTo(px,yc-a); else ctx.lineTo(px,yc-a);
+    }
+    ctx.stroke(); ctx.restore();
+  });
+
+  // Graduation
+  drawGraduation(ctx,W,schH,H);
+
+  // Flèche Δt (apparaît après le signal)
+  if(progress>0.8){
+    const x1=30+(delay0/tMax)*(W-40);
+    const x2=30+((delay0+dtms)/tMax)*(W-40);
+    if(x2<W-10&&x2-x1>8){
+      const yA=schH+8+2*(oscH+6)-2;
+      ctx.strokeStyle='#7D3C98'; ctx.lineWidth=1.8;
+      // Flèche double
+      ctx.beginPath(); ctx.moveTo(x1,yA); ctx.lineTo(x2,yA); ctx.stroke();
+      [[x1,1],[x2,-1]].forEach(([x,dir])=>{
+        ctx.fillStyle='#7D3C98';
+        ctx.beginPath(); ctx.moveTo(x,yA); ctx.lineTo(x+dir*7,yA-3); ctx.lineTo(x+dir*7,yA+3); ctx.closePath(); ctx.fill();
+      });
+      ctx.fillStyle='#7D3C98'; ctx.font='bold 12px Arial'; ctx.textAlign='center';
+      ctx.fillText(`\u0394t = ${dtms.toFixed(1)} ms`,(x1+x2)/2,yA-5);
+      ctx.textAlign='left';
+    }
+  }
+
+  // Info box
+  if(progress>=1){
+    document.getElementById('info1').innerHTML=`<strong>Signal acquis</strong>Δt = ${dtms.toFixed(2)} ms pour d = ${d} cm<br><em>Change le slider et clique à nouveau sur "Produire un clap"</em>`;
+  }
+}
+
+function drawDispositif(ctx,W,schH,d,withWave){
+  ctx.fillStyle='#EEF4FF'; ctx.fillRect(0,0,W,schH);
+  ctx.strokeStyle='#CCC'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,schH); ctx.lineTo(W,schH); ctx.stroke();
+  // Source
+  const srcX=36;
+  ctx.beginPath(); ctx.arc(srcX,schH/2,15,0,2*Math.PI);
+  ctx.fillStyle='#E8F0FF'; ctx.fill();
+  ctx.strokeStyle='#2E75B6'; ctx.lineWidth=1.5; ctx.stroke();
+  ctx.font='18px Arial'; ctx.textAlign='center'; ctx.fillText('👏',srcX,schH/2+7); ctx.textAlign='left';
+  // Micro 1
+  const m1x=110;
+  drawMicro(ctx,m1x,schH/2,'#C00000');
+  // Micro 2
+  const scale=3.0;
+  const m2x=Math.min(m1x+d*scale,W-25);
+  drawMicro(ctx,m2x,schH/2,'#1E6B2E');
+  // Axe
+  ctx.strokeStyle='#AAA'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(srcX+18,schH/2); ctx.lineTo(m2x+10,schH/2); ctx.stroke();
+  ctx.setLineDash([]);
+  // Accolade distance
+  ctx.strokeStyle='#555'; ctx.lineWidth=1;
+  ctx.fillStyle='#555'; ctx.font='11px Arial'; ctx.textAlign='center';
+  ctx.fillText(`d = ${d} cm`,(m1x+m2x)/2,schH-6);
+  ctx.textAlign='left';
+}
+
+function drawMicro(ctx,x,y,color){
+  ctx.fillStyle=color;
+  ctx.fillRect(x-4,y-10,8,18);
+  ctx.beginPath(); ctx.arc(x,y-10,6,Math.PI,0); ctx.fill();
+}
+
+function drawGraduation(ctx,W,schH,H){
+  const oscH=(H-schH-20)/2;
+  const tMax=10;
+  // Graduation sous les deux oscillo
+  for(let t=0;t<=tMax;t+=2){
+    const x=30+(t/tMax)*(W-40);
+    // Ligne verticale légère dans chaque oscillo
+    [0,1].forEach(ch=>{
+      const y0=schH+8+ch*(oscH+6);
+      ctx.strokeStyle='#E8E8E8'; ctx.lineWidth=1; ctx.setLineDash([2,3]);
+      ctx.beginPath(); ctx.moveTo(x,y0); ctx.lineTo(x,y0+oscH); ctx.stroke();
+      ctx.setLineDash([]);
+    });
+    // Label sous le 2e oscillo (bien visible)
+    const yLabel=schH+8+2*(oscH+6)+14;
+    ctx.fillStyle='#444'; ctx.font='bold 11px Arial'; ctx.textAlign='center';
+    ctx.fillText(t+' ms',x,yLabel);
+  }
+  ctx.textAlign='left';
+  ctx.fillStyle='#666'; ctx.font='11px Arial';
+  ctx.fillText('t (ms)',W-38,schH+8+2*(oscH+6)+14);
+}
+
+// ══ ONGLET 3 - PÉRIODE INTERACTIVE ═══════════════════
+// Deux poignées déplaçables : poignée gauche (t1) et droite (t2)
+let handle = {left:0.1, right:0.35}; // en fraction [0,1] du canvas
+let dragging = null; // 'left' ou 'right' ou null
+
+function updateS2(){
+  const f=parseInt(document.getElementById('sl2f').value);
+  document.getElementById('val2f').textContent=f;
+  updateSon2Freq();
+  drawS2();
+}
+
+function drawS2(){
+  const can=document.getElementById('c2'),ctx=can.getContext('2d');
+  const W=can.width,H=can.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#F8FBFF'; ctx.fillRect(0,0,W,H);
+
+  const f=parseInt(document.getElementById('sl2f').value);
+  const T=1000/f; // ms
+  const tMax=Math.max(T*4.5,10);
+  const LEFT=45,RIGHT=W-15,BOTTOM=H-36,TOP=18;
+  const plotW=RIGHT-LEFT,plotH=BOTTOM-TOP;
+  const y0=TOP+plotH/2;
+
+  // Grille
+  const gridStep=T;
+  ctx.strokeStyle='#E0EEFF'; ctx.lineWidth=1; ctx.setLineDash([3,4]);
+  for(let t=0;t<=tMax;t+=gridStep){
+    const x=LEFT+(t/tMax)*plotW;
+    ctx.beginPath(); ctx.moveTo(x,TOP); ctx.lineTo(x,BOTTOM); ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // Axes
+  ctx.strokeStyle='#999'; ctx.lineWidth=1.5;
+  ctx.beginPath(); ctx.moveTo(LEFT,TOP); ctx.lineTo(LEFT,BOTTOM+2); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(LEFT-4,y0); ctx.lineTo(RIGHT,y0); ctx.stroke();
+
+  // Graduation axe t
+  const nTick=Math.min(8,Math.ceil(tMax));
+  const tickStep=tMax/nTick;
+  for(let i=0;i<=nTick;i++){
+    const t=tickStep*i;
+    const x=LEFT+(t/tMax)*plotW;
+    ctx.strokeStyle='#AAA'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(x,y0-3); ctx.lineTo(x,y0+3); ctx.stroke();
+    ctx.fillStyle='#444'; ctx.font='bold 11px Arial'; ctx.textAlign='center';
+    ctx.fillText(t.toFixed(1),x,BOTTOM+14);
+  }
+  ctx.fillStyle='#666'; ctx.font='11px Arial'; ctx.textAlign='left';
+  ctx.fillText('t (ms)',RIGHT-30,BOTTOM+14);
+  ctx.fillText('P',LEFT-16,TOP+10);
+  ctx.textAlign='left';
+
+  // Signal
+  const amp=plotH/2-10;
+  ctx.strokeStyle='#C00000'; ctx.lineWidth=2.2;
+  ctx.beginPath();
+  for(let px=LEFT;px<=RIGHT;px++){
+    const t=((px-LEFT)/plotW)*tMax;
+    const y=y0-amp*Math.sin(2*Math.PI*f*t/1000);
+    if(px===LEFT) ctx.moveTo(px,y); else ctx.lineTo(px,y);
+  }
+  ctx.stroke();
+
+  // Zone entre les poignées (surlignage)
+  const hL=LEFT+handle.left*plotW;
+  const hR=LEFT+handle.right*plotW;
+  if(hL<hR){
+    ctx.fillStyle='rgba(30,107,46,0.08)';
+    ctx.fillRect(hL,TOP,hR-hL,plotH);
+    ctx.strokeStyle='rgba(30,107,46,0.3)'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath(); ctx.moveTo(hL,TOP); ctx.lineTo(hL,BOTTOM); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(hR,TOP); ctx.lineTo(hR,BOTTOM); ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  // Poignées (cercles bleus draggables)
+  [[handle.left,'gauche'],[handle.right,'droite']].forEach(([frac,side])=>{
+    const x=LEFT+frac*plotW;
+    ctx.beginPath(); ctx.arc(x,y0,10,0,2*Math.PI);
+    ctx.fillStyle=dragging===side?'#1F4E79':'#2E75B6';
+    ctx.fill();
+    ctx.strokeStyle='white'; ctx.lineWidth=2; ctx.stroke();
+    // Ligne verticale
+    ctx.strokeStyle='#2E75B6'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(x,TOP); ctx.lineTo(x,y0-11); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(x,y0+11); ctx.lineTo(x,BOTTOM); ctx.stroke();
+  });
+
+  // Flèche de mesure entre les deux poignées
+  if(hL<hR){
+    const yA=BOTTOM+26;
+    ctx.strokeStyle='#E67E22'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(hL,yA-4); ctx.lineTo(hR,yA-4); ctx.stroke();
+    [[hL,1],[hR,-1]].forEach(([x,d])=>{
+      ctx.fillStyle='#E67E22';
+      ctx.beginPath(); ctx.moveTo(x,yA-4); ctx.lineTo(x+d*7,yA-7); ctx.lineTo(x+d*7,yA-1); ctx.closePath(); ctx.fill();
+    });
+    const Tmes=((handle.right-handle.left)*plotW/plotW*tMax).toFixed(2);
+    ctx.fillStyle='#E67E22'; ctx.font='bold 12px Arial'; ctx.textAlign='center';
+    ctx.fillText(`T mesurée = ${Tmes} ms`,(hL+hR)/2,yA+10);
+    ctx.textAlign='left';
+
+    // Mettre à jour l'indicateur simplifié
+    document.getElementById('Tmesure').textContent=Tmes;
+  }
+}
+
+// Gestion souris / tactile pour les poignées
+function getCanvasX(can,e){
+  const rect=can.getBoundingClientRect();
+  const clientX=e.touches?e.touches[0].clientX:e.clientX;
+  return(clientX-rect.left)*(can.width/rect.width);
+}
+
+function onMouseDown2(e){
+  const can=document.getElementById('c2');
+  const f=parseInt(document.getElementById('sl2f').value);
+  const T=1000/f,tMax=Math.max(T*4.5,10);
+  const LEFT=45,plotW=can.width-60;
+  const cx=getCanvasX(can,e);
+  const hL=LEFT+handle.left*plotW;
+  const hR=LEFT+handle.right*plotW;
+  if(Math.abs(cx-hL)<18) dragging='gauche';
+  else if(Math.abs(cx-hR)<18) dragging='droite';
+  e.preventDefault();
+}
+function onMouseMove2(e){
+  if(!dragging) return;
+  const can=document.getElementById('c2');
+  const LEFT=45,plotW=can.width-60;
+  const cx=Math.max(LEFT,Math.min(getCanvasX(can,e),LEFT+plotW));
+  const frac=(cx-LEFT)/plotW;
+  if(dragging==='gauche') handle.left=Math.min(frac,handle.right-0.01);
+  else handle.right=Math.max(frac,handle.left+0.01);
+  drawS2();
+  e.preventDefault();
+}
+function onMouseUp2(){dragging=null;}
+
+// ══ ONGLET 4 - DOMAINES ═══════════════════════════════
+function freqToPos(f){return Math.log10(f/1)/Math.log10(50000/1);}
+function updateS3(){
+  const f=parseInt(document.getElementById('sl3f').value);
+  document.getElementById('val3f').textContent=f>=1000?(f/1000).toFixed(1)+' kHz':f+' Hz';
+  let cat,col;
+  if(f<20){cat='⬇ Infrason (inaudible - trop grave)';col='#6A0DAD';}
+  else if(f<=20000){cat='👂 Son audible par l\'être humain';col='#27AE60';}
+  else{cat='⬆ Ultrason (inaudible - trop aigu)';col='#C0392B';}
+  const el=document.getElementById('val3cat'); el.textContent=cat; el.style.color=col;
+  const pos=freqToPos(f)*100;
+  document.getElementById('friseCursor3').style.left=Math.min(Math.max(pos,0),97)+'%';
+  const ex=[{id:'ex3_0',a:1,b:15},{id:'ex3_1',a:10,b:30},{id:'ex3_2',a:50,b:200},
+            {id:'ex3_3',a:80,b:1100},{id:'ex3_4',a:28,b:4186},{id:'ex3_5',a:67,b:65000},
+            {id:'ex3_6',a:20000,b:100000},{id:'ex3_7',a:1e6,b:2e7}];
+  ex.forEach(({id,a,b})=>document.getElementById(id).classList.toggle('active',f>=a&&f<=b));
+}
+
+// Canvas sonar Q4
+function drawSonar(){
+  const can=document.getElementById('cSonar');
+  if(!can) return;
+  const ctx=can.getContext('2d'),W=can.width,H=can.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#EAF4FB'; ctx.fillRect(0,0,W,H);
+
+  // Fond marin (bas)
+  ctx.fillStyle='#8B6040';
+  ctx.fillRect(0,H-18,W,18);
+  ctx.fillStyle='white'; ctx.font='11px Arial'; ctx.textAlign='center';
+  ctx.fillText('Fond marin',W/2,H-5);
+
+  // Eau (milieu)
+  ctx.fillStyle='rgba(100,180,230,0.18)';
+  ctx.fillRect(0,40,W,H-58);
+
+  // Bateau (haut centre)
+  const bx=W/2;
+  ctx.font='28px Arial'; ctx.textAlign='center';
+  ctx.fillText('🚢',bx,34);
+
+  // Ligne pointillée verticale d (à droite)
+  const lineX=W-44;
+  ctx.strokeStyle='#555'; ctx.lineWidth=1.5; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(lineX,36); ctx.lineTo(lineX,H-18); ctx.stroke();
+  ctx.setLineDash([]);
+  // Tirets horizontaux
+  [[lineX,36],[lineX,H-18]].forEach(([x,y])=>{
+    ctx.beginPath(); ctx.moveTo(x-6,y); ctx.lineTo(x+6,y); ctx.stroke();
+  });
+  ctx.fillStyle='#333'; ctx.font='bold 12px Arial'; ctx.textAlign='left';
+  ctx.fillText('d = ?',lineX+8,(36+H-18)/2+5);
+
+  // Flèche aller (vers le bas, légèrement à gauche du centre)
+  const ax=bx-28, rx=bx+28;
+  // Aller
+  ctx.strokeStyle='#1F4E79'; ctx.lineWidth=2; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(ax,38); ctx.lineTo(ax,H-22); ctx.stroke();
+  ctx.fillStyle='#1F4E79';
+  ctx.beginPath(); ctx.moveTo(ax,H-22); ctx.lineTo(ax-5,H-32); ctx.lineTo(ax+5,H-32); ctx.closePath(); ctx.fill();
+  ctx.font='11px Arial'; ctx.textAlign='center';
+  ctx.fillText('aller →',ax-18,70);
+
+  // Retour
+  ctx.strokeStyle='#C00000'; ctx.lineWidth=2;
+  ctx.beginPath(); ctx.moveTo(rx,H-22); ctx.lineTo(rx,38); ctx.stroke();
+  ctx.fillStyle='#C00000';
+  ctx.beginPath(); ctx.moveTo(rx,38); ctx.lineTo(rx-5,48); ctx.lineTo(rx+5,48); ctx.closePath(); ctx.fill();
+  ctx.font='11px Arial'; ctx.textAlign='center';
+  ctx.fillText('← retour',rx+20,70);
+
+  // Δt
+  ctx.fillStyle='#7D3C98'; ctx.font='bold 11px Arial'; ctx.textAlign='center';
+  ctx.fillText('Δt = 0,20 s (aller-retour)',W/2,H-22);
+  ctx.textAlign='left';
+}
+
+// ══ ONGLET 5 - NIVEAU SONORE ══════════════════════════
+const DB_EX=[
+  {db:0,label:'Seuil d\'audition'},{db:20,label:'Feuilles dans le vent'},
+  {db:30,label:'Chuchotement'},{db:40,label:'Bibliothèque calme'},
+  {db:50,label:'Pluie légère'},{db:60,label:'Conversation normale'},
+  {db:70,label:'Aspirateur (à 1 m)'},{db:80,label:'Circulation dense'},
+  {db:85,label:'⚠️ Seuil de danger'},{db:90,label:'Tondeuse à gazon'},
+  {db:100,label:'Marteau-piqueur'},{db:110,label:'Concert rock'},
+  {db:120,label:'Réacteur d\'avion - douleur'},
+];
+
+function updateS4(){
+  const amp=parseInt(document.getElementById('sl4amp').value);
+  document.getElementById('val4amp').textContent=amp;
+  const db=Math.round(amp*1.2);
+  document.getElementById('dbDisplay').textContent=db+' dB';
+  const col=db<60?'#27AE60':db<85?'#E67E22':'#C00000';
+  document.getElementById('dbDisplay').style.color=col;
+  let best=DB_EX[0];
+  DB_EX.forEach(ex=>{if(Math.abs(ex.db-db)<Math.abs(best.db-db))best=ex;});
+  document.getElementById('dbExample').textContent=best.label;
+  const pct=(db/130)*100;
+  document.getElementById('jaugeCursor').style.left=Math.min(pct,98)+'%';
+  document.getElementById('jaugeFill').style.width=(100-pct)+'%';
+  updateSon4Gain();
+  drawS4(amp);
+}
+
+function drawS4(amp){
+  const can=document.getElementById('c4'),ctx=can.getContext('2d');
+  const W=can.width,H=can.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#F8FBFF'; ctx.fillRect(0,0,W,H);
+  const a=(amp/100)*(H/2-20),y0=H/2;
+  const db=Math.round(amp*1.2);
+  const col=db<60?'#27AE60':db<85?'#E67E22':'#C00000';
+  ctx.strokeStyle='#DDD'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(30,y0); ctx.lineTo(W-10,y0); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(30,10); ctx.lineTo(30,H-16); ctx.stroke();
+  ctx.strokeStyle=col; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let px=30;px<W-10;px++){
+    const t=((px-30)/(W-40))*10;
+    const y=y0-a*Math.sin(2*Math.PI*440*t/1000);
+    if(px===30) ctx.moveTo(px,y); else ctx.lineTo(px,y);
+  }
+  ctx.stroke();
+  if(a>5){
+    ctx.strokeStyle='#AAA'; ctx.lineWidth=1; ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(30,y0-a); ctx.lineTo(W-10,y0-a); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(30,y0+a); ctx.lineTo(W-10,y0+a); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle='#888'; ctx.font='11px Arial';
+    ctx.fillText('amplitude',34,y0-a-4);
+  }
+  ctx.fillStyle='#555'; ctx.font='11px Arial';
+  ctx.fillText('P',2,14); ctx.fillText('t (ms)',W-38,y0-4);
+}
+
+// ══ ONGLET 6 - TIMBRE : SYNTHÉTISEUR + COMPARATEUR ═══════
+// Profils d'harmoniques [H1, H2, H3, H4, H5]
+// Son pur     : sinusoïde seule
+// Son pur  : H1 seul → sinusoïde parfaite
+// Flûte    : H1 fort + H2 à ~46%, H3-H5 quasi nuls → profil mesuré par FFT sur enregistrement réel
+// Orgue    : H1+H3+H5 dominants (impaires) → timbre creux/riche caractéristique
+const PRESETS = {
+  pur:   [1.00, 0.00, 0.00, 0.00, 0.00],
+  flute: [1.00, 0.46, 0.04, 0.04, 0.04],  // Son 4 test v4 : vibrato + souffle léger + H1+H2
+  orgue: [1.00, 0.75, 0.55, 0.38, 0.25],  // Son 6 test v4 : toutes harmoniques décroissantes
+};
+// Ordre secret pour le comparateur
+const INST_MAP = { A:'orgue', B:'pur', C:'flute' };
+const INST_LABELS = { pur:'🎵 Son pur (diapason)', flute:'🎶 Flûte', orgue:'🎹 Orgue' };
+const HARM_COLORS = ['#1F4E79','#C00000','#1E6B2E','#E67E22','#7D3C98'];
+
+// Amplitudes courantes du synthétiseur
+let harmAmps = [1.0, 0.0, 0.0, 0.0, 0.0];
+let son5synthPlaying = false, son5synthNodes = null;
+let instNodes = {};
+
+function initHarmonicSliders(){
+  const container = document.getElementById('harmonicSliders');
+  if(!container || container.children.length > 0) return;
+  const labels = ['H1 - Fondamental','H2 - 2e harmonique','H3 - 3e harmonique','H4 - 4e harmonique','H5 - 5e harmonique'];
+  harmAmps.forEach((val, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'background:white;border-radius:6px;padding:8px 10px;border:2px solid '+HARM_COLORS[i]+'22';
+    div.innerHTML = `
+      <div style="font-size:12px;font-weight:700;color:${HARM_COLORS[i]};margin-bottom:4px">${labels[i]}</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input type="range" id="sl5h${i}" min="0" max="100" value="${Math.round(val*100)}"
+          oninput="setHarm(${i},this.value)"
+          style="flex:1;accent-color:${HARM_COLORS[i]}">
+        <span id="val5h${i}" style="font-size:12px;font-weight:700;color:${HARM_COLORS[i]};min-width:32px">${Math.round(val*100)}%</span>
+      </div>`;
+    container.appendChild(div);
+  });
+}
+
+function setHarm(i, val){
+  harmAmps[i] = parseInt(val)/100;
+  document.getElementById('val5h'+i).textContent = val+'%';
+  updateSynthSound();
+  drawSynth();
+  updateSynthInfo();
+}
+
+function updateSynthInfo(){
+  const nActive = harmAmps.filter(a=>a>0.05).length;
+  const el = document.getElementById('infoSynth');
+  if(!el) return;
+  if(nActive===1) el.innerHTML='<strong>Son pur</strong>Une seule fréquence. Signal sinusoïdal régulier.';
+  else if(nActive<=2) el.innerHTML='<strong>Son simple</strong>Quelques harmoniques - timbre léger.';
+  else el.innerHTML=`<strong>Son composé</strong>${nActive} harmoniques actives - timbre riche et complexe.`;
+}
+
+function updateSynthSound(){
+  if(!son5synthPlaying || !son5synthNodes) return;
+  const f = parseInt(document.getElementById('sl5f').value);
+  const tot = harmAmps.reduce((s,a)=>s+a,0) || 1;
+  son5synthNodes.forEach((node, i) => {
+    if(node){
+      node.osc.frequency.value = f*(i+1);
+      node.gain.gain.cancelScheduledValues(0);
+      node.gain.gain.value = harmAmps[i]/tot * 0.15;
+    }
+  });
+}
+
+function toggleSon5synth(){
+  const btn = document.getElementById('btnSon5synth');
+  if(son5synthPlaying){
+    son5synthNodes && son5synthNodes.forEach(n=>{ if(n) try{n.osc.stop();}catch(e){} });
+    son5synthNodes = null; son5synthPlaying = false;
+    btn.textContent = '🔊 Écouter mon son'; btn.classList.remove('playing');
+  } else {
+    son5synthPlaying = true; btn.textContent = '⏹ Arrêter'; btn.classList.add('playing');
+    const ctx = getCtx();
+    const f = parseInt(document.getElementById('sl5f').value);
+    const tot = harmAmps.reduce((s,a)=>s+a,0) || 1;
+    son5synthNodes = harmAmps.map((amp, i) => {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'sine'; osc.frequency.value = f*(i+1);
+      g.gain.value = amp/tot * 0.15;
+      osc.connect(g); g.connect(ctx.destination); osc.start();
+      return {osc, gain:g};
+    });
+  }
+}
+
+function resetHarmonics(){
+  harmAmps = [1.0, 0.0, 0.0, 0.0, 0.0];
+  harmAmps.forEach((v,i)=>{
+    const sl = document.getElementById('sl5h'+i);
+    const lbl = document.getElementById('val5h'+i);
+    if(sl) sl.value = Math.round(v*100);
+    if(lbl) lbl.textContent = Math.round(v*100)+'%';
+  });
+  updateSynthSound(); drawSynth(); updateSynthInfo();
+}
+
+function applyPreset(name){
+  const p = PRESETS[name];
+  p.forEach((v,i)=>{
+    harmAmps[i] = v;
+    const sl = document.getElementById('sl5h'+i);
+    const lbl = document.getElementById('val5h'+i);
+    if(sl) sl.value = Math.round(v*100);
+    if(lbl) lbl.textContent = Math.round(v*100)+'%';
+  });
+  updateSynthSound(); drawSynth(); updateSynthInfo();
+}
+function presetPur(){ applyPreset('pur'); }
+function presetGuitare(){ applyPreset('flute'); }
+function presetClarinette(){ applyPreset('orgue'); }
+
+function drawSynth(){
+  const can = document.getElementById('c5synth');
+  if(!can) return;
+  const ctx = can.getContext('2d'), W=can.width, H=can.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#F8FBFF'; ctx.fillRect(0,0,W,H);
+  const f = parseInt(document.getElementById('sl5f').value);
+  const tot = harmAmps.reduce((s,a)=>s+a,0) || 1;
+  const y0 = H/2, amp = H/2-14;
+  const tMax = 3000/f;
+
+  // Composantes individuelles (légères)
+  harmAmps.forEach((a,i)=>{
+    if(a < 0.02) return;
+    ctx.strokeStyle = HARM_COLORS[i]+'55'; ctx.lineWidth=1; ctx.setLineDash([3,3]);
+    ctx.beginPath();
+    for(let px=10;px<W-10;px++){
+      const t=((px-10)/(W-20))*tMax;
+      const y=y0-(amp*a/tot)*Math.sin(2*Math.PI*f*(i+1)*t/1000);
+      if(px===10) ctx.moveTo(px,y); else ctx.lineTo(px,y);
+    }
+    ctx.stroke(); ctx.setLineDash([]);
+  });
+
+  // Signal résultant (épais)
+  ctx.strokeStyle='#1F4E79'; ctx.lineWidth=2.5;
+  ctx.beginPath();
+  for(let px=10;px<W-10;px++){
+    const t=((px-10)/(W-20))*tMax;
+    let y=0; harmAmps.forEach((a,i)=>y+=a*Math.sin(2*Math.PI*f*(i+1)*t/1000));
+    y=y0-amp*(y/tot);
+    if(px===10) ctx.moveTo(px,y); else ctx.lineTo(px,y);
+  }
+  ctx.stroke();
+
+  // Baseline + labels
+  ctx.strokeStyle='#DDD'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(10,y0); ctx.lineTo(W-10,y0); ctx.stroke();
+  ctx.fillStyle='#666'; ctx.font='11px Arial';
+  ctx.fillText('Signal résultant (bleu) = somme des harmoniques (pointillés)',10,14);
+}
+
+// ── Comparateur instruments ──
+function drawInstrument(canId, preset){
+  const can = document.getElementById(canId);
+  if(!can) return;
+  const ctx = can.getContext('2d'), W=can.width, H=can.height;
+  ctx.clearRect(0,0,W,H);
+  ctx.fillStyle='#F8FBFF'; ctx.fillRect(0,0,W,H);
+  const amps = PRESETS[preset];
+  const tot = amps.reduce((s,a)=>s+a,0);
+  const f=440, y0=H/2, amp=H/2-10;
+  const tMax=3000/f;
+  ctx.strokeStyle='#C00000'; ctx.lineWidth=2;
+  ctx.beginPath();
+  for(let px=6;px<W-6;px++){
+    const t=((px-6)/(W-12))*tMax;
+    let y=0; amps.forEach((a,i)=>y+=a*Math.sin(2*Math.PI*f*(i+1)*t/1000));
+    y=y0-amp*(y/tot);
+    if(px===6) ctx.moveTo(px,y); else ctx.lineTo(px,y);
+  }
+  ctx.stroke();
+  ctx.strokeStyle='#EEE'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(6,y0); ctx.lineTo(W-6,y0); ctx.stroke();
+}
+
+// Nœuds actifs du comparateur (pour pouvoir les arrêter)
+let instActiveNodes = [];
+function stopInstrumentNodes(){
+  instActiveNodes.forEach(n=>{
+    try{n.gain.cancelScheduledValues(0);n.gain.setValueAtTime(0,0);}catch(e){}
+    try{n.node.stop(audioCtx?audioCtx.currentTime+0.02:0);}catch(e){}
+  });
+  instActiveNodes=[];
+}
+
+function playInstrument(letter){
+  stopInstrumentNodes();
+  const preset = INST_MAP[letter];
+  const ctx2 = getCtx();
+  const f = 440, dur = 3.0;
+
+  if(preset === 'flute'){
+    // Son 4 du test v4 : vibrato 5 Hz ±3 Hz + attaque lente 0.7s + H1+H2 + souffle très léger
+    const harmonics = [[1,1.0],[2,0.46],[3,0.05]];
+    const tot = harmonics.reduce((s,[h,a])=>s+a,0);
+    harmonics.forEach(([h,a])=>{
+      const osc=ctx2.createOscillator(), g=ctx2.createGain();
+      osc.type='sine'; osc.frequency.value=f*h;
+      // Vibrato sur le fondamental seulement
+      if(h===1){
+        const lfo=ctx2.createOscillator(), lfoG=ctx2.createGain();
+        lfo.frequency.value=5; lfoG.gain.value=3;
+        lfo.connect(lfoG); lfoG.connect(osc.frequency); lfo.start();
+        lfo.stop(ctx2.currentTime+dur+0.5);
+        instActiveNodes.push({node:lfo,gain:lfoG});
+      }
+      g.gain.setValueAtTime(0,ctx2.currentTime);
+      g.gain.linearRampToValueAtTime(a/tot*0.18,ctx2.currentTime+0.7);
+      g.gain.setTargetAtTime(0,ctx2.currentTime+dur-0.2,0.12);
+      osc.connect(g); g.connect(ctx2.destination); osc.start();
+      osc.stop(ctx2.currentTime+dur+0.4);
+      instActiveNodes.push({node:osc,gain:g});
+    });
+    // Souffle très léger (filtré passe-haut)
+    const bufSize=ctx2.sampleRate*(dur+0.5);
+    const buf=ctx2.createBuffer(1,bufSize,ctx2.sampleRate);
+    const data=buf.getChannelData(0);
+    for(let i=0;i<bufSize;i++) data[i]=(Math.random()*2-1);
+    const noise=ctx2.createBufferSource(); noise.buffer=buf;
+    const filt=ctx2.createBiquadFilter(); filt.type='highpass'; filt.frequency.value=3000;
+    const gn=ctx2.createGain();
+    gn.gain.setValueAtTime(0,ctx2.currentTime);
+    gn.gain.linearRampToValueAtTime(0.006,ctx2.currentTime+0.5);
+    gn.gain.setTargetAtTime(0,ctx2.currentTime+dur-0.2,0.1);
+    noise.connect(filt); filt.connect(gn); gn.connect(ctx2.destination);
+    noise.start(); instActiveNodes.push({node:noise,gain:gn});
+
+  } else if(preset === 'orgue'){
+    // Son 6 du test v4 : attaque instantanée + toutes harmoniques décroissantes
+    [[1,1.0],[2,0.75],[3,0.55],[4,0.38],[5,0.25],[6,0.15],[7,0.08]].forEach(([h,a])=>{
+      const tot=2.16;
+      const osc=ctx2.createOscillator(), g=ctx2.createGain();
+      osc.type='sine'; osc.frequency.value=f*h;
+      g.gain.setValueAtTime(a/tot*0.18,ctx2.currentTime);
+      g.gain.setTargetAtTime(0,ctx2.currentTime+dur-0.15,0.08);
+      osc.connect(g); g.connect(ctx2.destination); osc.start();
+      osc.stop(ctx2.currentTime+dur+0.3);
+      instActiveNodes.push({node:osc,gain:g});
+    });
+
+  } else {
+    // Son pur : sinusoïde seule
+    const osc=ctx2.createOscillator(), g=ctx2.createGain();
+    osc.type='sine'; osc.frequency.value=f;
+    g.gain.setValueAtTime(0.18,ctx2.currentTime);
+    g.gain.setTargetAtTime(0,ctx2.currentTime+dur-0.15,0.1);
+    osc.connect(g); g.connect(ctx2.destination); osc.start();
+    osc.stop(ctx2.currentTime+dur+0.3);
+    instActiveNodes.push({node:osc,gain:g});
+  }
+}
+
+function revealInstruments(){
+  const div = document.getElementById('revealResult');
+  div.style.display='block';
+  div.innerHTML = Object.entries(INST_MAP).map(([letter,inst])=>
+    `<span style="margin-right:12px">Son ${letter} = ${INST_LABELS[inst]}</span>`
+  ).join('');
+}
+
+function updateS5(){
+  const f = parseInt(document.getElementById('sl5f').value);
+  document.getElementById('val5f').textContent = f;
+  updateSynthSound();
+  drawSynth();
+}
+
+function initOnglet6(){
+  initHarmonicSliders();
+  drawSynth();
+  drawInstrument('c5instA', INST_MAP['A']);
+  drawInstrument('c5instB', INST_MAP['B']);
+  drawInstrument('c5instC', INST_MAP['C']);
+  updateSynthInfo();
+}
+
+// ══ ONGLET 7 - BILAN QCM ══════════════════════════════
+const qcmState={};
+function selectQCM(qid,btn,correct){
+  // Ne rien faire si déjà corrigé
+  if(document.getElementById('qcm'+qid).dataset.corrected) return;
+  document.querySelectorAll('#qcm'+qid+' .qcm-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  qcmState[qid]={btn,correct};
+}
+
+function corrigerBilan(){
+  // Texte à trous
+  let trouxScore=0,trouxTotal=0;
+  document.querySelectorAll('.trou').forEach(inp=>{
+    trouxTotal++;
+    const rep=inp.dataset.rep.toLowerCase().trim();
+    const val=inp.value.toLowerCase().trim();
+    if(val===rep||val.replace('/','').replace(' ','')===rep.replace('/','').replace(' ','')){
+      inp.classList.add('correct'); inp.classList.remove('incorrect'); trouxScore++;
+    } else if(val!==''){
+      inp.classList.remove('correct'); inp.classList.add('incorrect');
+    }
+  });
+  // QCM
+  let qcmScore=0,qcmTotal=5;
+  for(let i=0;i<5;i++){
+    const item=document.getElementById('qcm'+i);
+    item.dataset.corrected='1';
+    if(qcmState[i]){
+      if(qcmState[i].correct){qcmState[i].btn.classList.add('correct');qcmScore++;}
+      else qcmState[i].btn.classList.add('incorrect');
+    }
+    // Montrer la bonne réponse
+    item.querySelectorAll('.qcm-btn').forEach(b=>{
+      if(b.onclick&&b.onclick.toString().includes('true')) b.classList.add('correct');
+    });
+  }
+  const total=trouxScore+qcmScore;
+  const max=trouxTotal+qcmTotal;
+  document.getElementById('scoreNum').textContent=total+' / '+max;
+  const pct=Math.round(total/max*100);
+  document.getElementById('scoreMsg').textContent=pct>=80?'🎉 Excellent travail !':pct>=60?'👍 Bien ! Relis les points incorrects.':'📖 Revois les notions dans la boîte à outils.';
+  document.getElementById('scoreBox').style.display='block';
+}
+
+// ══ CONTRÔLES GLOBAUX ════════════════════════════════
+function showTab(idx){
+  document.querySelectorAll('.tab-content').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',i===idx));
+  if(idx===0){drawS0();drawCloche();}
+  if(idx===1){if(clapDone)drawS1();else drawS1empty();}
+  if(idx===2) drawS2();
+  if(idx===3) drawSonar();
+  if(idx===4) drawS4(parseInt(document.getElementById('sl4amp').value));
+  if(idx===5) initOnglet6();
+}
+
+let toolboxOpen=true;
+function toggleToolbox(){
+  toolboxOpen=!toolboxOpen;
+  document.getElementById('toolbox-body').classList.toggle('collapsed',!toolboxOpen);
+  document.getElementById('toolbox-arrow').textContent=toolboxOpen?'▼':'▶';
+}
+
+// ══ SAUVEGARDE ════════════════════════════════════════
+const SAVE_KEY='tp_PH8_son_v2';
+
+function getAllInputData(){
+  const data={};
+  for(let i=0;i<6;i++){const el=document.getElementById('ev'+i);if(el)data['ev_'+i]=el.value;}
+  document.querySelectorAll('textarea').forEach((el,i)=>data['ta_'+i]=el.value);
+  document.querySelectorAll('.mesure-table input').forEach((el,i)=>data['mt_'+i]=el.value);
+  document.querySelectorAll('.trou').forEach((el,i)=>data['tr_'+i]=el.value);
+  document.querySelectorAll('.carac-input').forEach((el,i)=>data['ci_'+i]=el.value);
+  return data;
+}
+function restoreInputData(data){
+  for(let i=0;i<6;i++){const el=document.getElementById('ev'+i);if(el&&data['ev_'+i]!==undefined)el.value=data['ev_'+i];}
+  document.querySelectorAll('textarea').forEach((el,i)=>{if(data['ta_'+i]!==undefined)el.value=data['ta_'+i];});
+  document.querySelectorAll('.mesure-table input').forEach((el,i)=>{if(data['mt_'+i]!==undefined)el.value=data['mt_'+i];});
+  document.querySelectorAll('.trou').forEach((el,i)=>{if(data['tr_'+i]!==undefined)el.value=data['tr_'+i];});
+  document.querySelectorAll('.carac-input').forEach((el,i)=>{if(data['ci_'+i]!==undefined)el.value=data['ci_'+i];});
+}
+function saveAll(){
+  try{
+    const data=getAllInputData();
+    data['_saved_at']=new Date().toLocaleString('fr-FR');
+    localStorage.setItem(SAVE_KEY,JSON.stringify(data));
+    const st=document.getElementById('saveStatus');
+    st.textContent='✅ Sauvegardé à '+data['_saved_at']; st.className='save-status ok';
+  }catch(e){const st=document.getElementById('saveStatus');st.textContent='⚠️ Échec';st.className='save-status warn';}
+}
+function clearAll(){
+  if(!confirm('Effacer toutes les réponses ? Action irréversible.')) return;
+  try{
+    localStorage.removeItem(SAVE_KEY);
+    document.querySelectorAll('textarea').forEach(el=>el.value='');
+    document.querySelectorAll('.mesure-table input').forEach(el=>el.value='');
+    document.querySelectorAll('.trou').forEach(el=>{el.value='';el.classList.remove('correct','incorrect');});
+    const st=document.getElementById('saveStatus');
+    st.textContent='Sauvegarde effacée'; st.className='save-status warn';
+  }catch(e){}
+}
+function loadOnStart(){
+  try{
+    const raw=localStorage.getItem(SAVE_KEY); if(!raw)return;
+    const data=JSON.parse(raw);
+    restoreInputData(data);
+    const st=document.getElementById('saveStatus');
+    st.textContent='✅ Chargé ('+( data['_saved_at']||'?')+')'; st.className='save-status ok';
+  }catch(e){}
+}
+setInterval(saveAll,60000);
+
+// ══ INIT ══════════════════════════════════════════════
+window.onload=()=>{
+  loadOnStart();
+  if(window.renderMathInElement){
+    renderMathInElement(document.body,{
+      delimiters:[{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],
+      throwOnError:false
+    });
+  }
+  // Onglet 1
+  drawS0();
+  drawCloche();
+  // Onglet 2
+  drawS1empty();
+  // Onglet 3 - initialiser les poignées à t=0 et t=T
+  const f0=parseInt(document.getElementById('sl2f').value);
+  const T0=1000/f0,tMax0=Math.max(T0*4.5,10);
+  handle.left=0.02; handle.right=T0/tMax0;
+  drawS2();
+  // Écoute souris/tactile sur canvas onglet 3
+  const c2=document.getElementById('c2');
+  c2.addEventListener('mousedown',onMouseDown2);
+  c2.addEventListener('mousemove',onMouseMove2);
+  c2.addEventListener('mouseup',onMouseUp2);
+  c2.addEventListener('mouseleave',onMouseUp2);
+  c2.addEventListener('touchstart',onMouseDown2,{passive:false});
+  c2.addEventListener('touchmove',onMouseMove2,{passive:false});
+  c2.addEventListener('touchend',onMouseUp2);
+  // Onglet 4
+  updateS3(); drawSonar();
+  // Onglet 5
+  updateS4();
+  // Onglet 6 (initialisé au premier showTab(5))
+};
+</script>
+</body>
+</html>
